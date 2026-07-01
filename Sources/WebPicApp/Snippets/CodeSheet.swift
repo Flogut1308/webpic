@@ -9,8 +9,12 @@ struct CodeSheet: View {
 
     private var code: String {
         guard let img = store.selected else { return "" }
-        let w = store.primaryResult?.width ?? img.pixelWidth
-        let h = store.primaryResult?.height ?? img.pixelHeight
+        // Snippet dimensions must reflect the resized OUTPUT (min(presetWidth, origWidth)),
+        // not the original — and must be correct even before processing runs. newDimensions
+        // is the app's single source of truth (also used by PreviewColumn).
+        let dims = EstimationService.newDimensions(image: img, settings: store.settings)
+        let w = dims.width
+        let h = dims.height
         let base = (img.name as NSString).deletingPathExtension
         let formats: [ImageFormat] = [.avif, .webp, .jpeg, .png].filter { store.settings.formats.contains($0) }
         let input = SnippetInput(baseName: base, formats: formats, width: w, height: h,
