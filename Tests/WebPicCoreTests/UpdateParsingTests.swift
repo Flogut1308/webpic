@@ -42,4 +42,16 @@ final class UpdateParsingTests: XCTestCase {
     func testMalformed() {
         XCTAssertNil(UpdateChecker.parseLatestRelease("not json".data(using: .utf8)!))
     }
+
+    func testParseCRLFBody() throws {
+        // GitHub transmits release bodies with CRLF line endings.
+        let json = try JSONSerialization.data(withJSONObject: [
+            "tag_name": "v2.1",
+            "html_url": "https://x/rel",
+            "body": "- one\r\n- two\r\n- three",
+            "assets": [],
+        ])
+        let info = UpdateChecker.parseLatestRelease(json)!
+        XCTAssertEqual(info.notes, ["one", "two", "three"])
+    }
 }

@@ -6,7 +6,8 @@ public enum UpdateChecker {
               let tag = obj["tag_name"] as? String else { return nil }
         let version = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
         let body = (obj["body"] as? String) ?? ""
-        let notes = body.split(separator: "\n")
+        // GitHub bodies use CRLF; `.isNewline` splits LF, CR, and the `\r\n` grapheme alike.
+        let notes = body.split(whereSeparator: \.isNewline)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .map { $0.hasPrefix("- ") ? String($0.dropFirst(2)) : $0 }
             .filter { !$0.isEmpty }
