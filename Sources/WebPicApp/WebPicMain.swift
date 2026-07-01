@@ -19,15 +19,23 @@ struct WebPicMain: App {
         case "dark":  theme.appearance = .dark
         default:      break
         }
+        // Apply WEBPIC_TAB by assigning store.tab directly (resolves via the property's
+        // type; the bare `Tab` name is ambiguous with SwiftUI.Tab and the WebPicCore enum).
+        let tabEnv = env["WEBPIC_TAB"]
+        let applyTabOverride: () -> Void = {
+            switch tabEnv {
+            case "compare": store.tab = .compare
+            case "export":  store.tab = .export
+            case "batch":   store.tab = .batch
+            default:        break
+            }
+        }
         if let paths = env["WEBPIC_IMPORT"], !paths.isEmpty {
             let urls = paths.split(separator: ":").map { URL(fileURLWithPath: String($0)) }
-            Task { await store.importFiles(urls) }
-        }
-        switch env["WEBPIC_TAB"] {
-        case "compare": store.tab = .compare
-        case "export":  store.tab = .export
-        case "batch":   store.tab = .batch
-        default:        break
+            // Apply the tab override AFTER import — importFiles resets tab to .settings on completion.
+            Task { await store.importFiles(urls); applyTabOverride() }
+        } else {
+            applyTabOverride()
         }
         _store = State(initialValue: store)
         _theme = State(initialValue: theme)
