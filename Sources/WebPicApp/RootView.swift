@@ -25,6 +25,7 @@ struct RootView: View {
         .environment(\.wpPalette, palette)
         .preferredColorScheme(theme.preferredColorScheme)
         .tint(.blue)
+        .screenshotWindowFix()
         .overlay {
             if store.sheet == .code {
                 CodeSheet(store: store).environment(\.wpPalette, palette)
