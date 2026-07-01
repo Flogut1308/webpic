@@ -9,8 +9,10 @@ struct MainView: View {
         Group {
             if store.isEmpty {
                 EmptyImportView()
-            } else if store.tab == .compare || store.tab == .export || store.tab == .batch {
-                SettingsPlaceholderView()   // Compare/Export = M5, Batch = M7
+            } else if store.tab == .compare {
+                CompareView(store: store)
+            } else if store.tab == .export || store.tab == .batch {
+                SettingsPlaceholderView()   // Export = M5, Batch = M7
             } else {
                 SettingsView(store: store)
             }

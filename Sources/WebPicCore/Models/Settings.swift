@@ -29,3 +29,10 @@ public struct Settings: Codable, Equatable, Sendable {
         filenameScheme: "{name}-{w}.{format}"
     )
 }
+
+public extension Settings {
+    /// Cheap identity string to retrigger processing when settings change.
+    var hashValueString: String {
+        "\(outputMode.rawValue)-\(preset.rawValue)-\(formats.map(\.rawValue).sorted().joined())-\(compressionMode.rawValue)-\(quality)-\(targetValue)-\(targetUnit.rawValue)-\(colorSpace.rawValue)"
+    }
+}
