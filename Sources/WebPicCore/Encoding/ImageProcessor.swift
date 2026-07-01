@@ -40,7 +40,10 @@ public struct ImageProcessor: Sendable {
         }
         guard let s = cfSrc,
               var props = CGImageSourceCopyPropertiesAtIndex(s, 0, nil) as? [CFString: Any] else { return nil }
-        props[kCGImagePropertyOrientation] = 1
+        props[kCGImagePropertyOrientation] = 1        // orientation is baked into the pixels
+        // Pixels are color-converted (sRGB/P3) before encode, so the SOURCE color profile no
+        // longer describes them — drop it and let the destination write the converted profile.
+        props[kCGImagePropertyProfileName] = nil
         return props
     }
     private func orientedImage(from src: CGImageSource) -> CGImage? {
@@ -70,8 +73,8 @@ public struct ImageProcessor: Sendable {
     public struct TargetOutput: Sendable { public let results: [EncodeResult]; public let chosenQuality: Int }
 
     /// Target-file-size mode: solve quality on the primary format, encode all selected formats at it.
-    /// `sourceMetadata` is embedded (when `settings.keepMetadata`) on the non-primary re-encodes;
-    /// the primary format reuses the solver's already-encoded data as-is.
+    /// `sourceMetadata` is embedded on ALL formats when `settings.keepMetadata`; the solver's
+    /// already-encoded primary bytes are reused only when there's no metadata to embed.
     public func processForTarget(source: CGImage, settings: Settings, sourceMetadata: [CFString: Any]? = nil) throws -> TargetOutput {
         let targetW = min(Preset.width(for: settings.preset), source.width)
         let resized = ImageResizer.resize(source, toWidth: targetW)
@@ -88,7 +91,9 @@ public struct ImageProcessor: Sendable {
         let selected = Self.order.filter { settings.formats.contains($0) }
         let meta = settings.keepMetadata ? sourceMetadata : nil
         let results = try selected.map { fmt -> EncodeResult in
-            let data = fmt == primary
+            // Reuse the solver's primary bytes only when there's no metadata to embed;
+            // otherwise re-encode the primary (at the solved quality) WITH metadata too.
+            let data = (fmt == primary && meta == nil)
                 ? solution.data
                 : try encoder(for: fmt).encode(converted, quality: fmt == .png ? 1 : q, metadata: meta)
             return EncodeResult(format: fmt, width: converted.width, height: converted.height,
