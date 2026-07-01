@@ -168,12 +168,21 @@ public final class AppStore {
         }.value
     }
 
-    /// Process every URL-backed image concurrently (bounded), updating status + results.
+    @ObservationIgnored private var batchSettingsHash = ""
+
+    /// Process URL-backed images concurrently (bounded), updating status + results.
+    /// On a settings change, re-encodes everything; on add/remove with unchanged settings,
+    /// only processes images not already done (so completed cards don't flash back to "Wartet").
     @MainActor
     public func processAll() async {
         let settings = self.settings
+        let hash = settings.hashValueString
+        let full = hash != batchSettingsHash          // settings changed → reprocess all
+        batchSettingsHash = hash
         let work: [(id: String, url: URL)] = images.compactMap { img in
-            img.url.map { (img.id, $0) }
+            guard let url = img.url else { return nil }
+            if !full, case .done = img.status, !img.results.isEmpty { return nil }  // keep done work
+            return (img.id, url)
         }
         for (id, _) in work { setStatus(id, .waiting); setResults(id, []) }
 

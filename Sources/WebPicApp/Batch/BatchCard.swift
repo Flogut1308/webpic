@@ -18,7 +18,7 @@ struct BatchCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack {
-                ThumbnailView(image: image, cornerRadius: 0).frame(height: 118).frame(maxWidth: .infinity).clipped()
+                ThumbnailView(image: image, cornerRadius: 0).frame(height: 118).frame(maxWidth: .infinity)
                 if case .processing = image.status {
                     ProgressView().controlSize(.small).tint(.white)
                 } else if case .error = image.status {
