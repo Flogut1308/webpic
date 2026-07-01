@@ -20,6 +20,17 @@ final class PerImageSettingsTests: XCTestCase {
         XCTAssertNil(s.images[0].settingsOverride)
     }
 
+    func testTurningSameForAllOnClearsStaleOverrides() {
+        let s = store(); s.sameForAll = false
+        s.selectPreset(.icon)
+        XCTAssertEqual(s.images[0].settingsOverride?.preset, .icon)
+        // Switching back to "one setting for all" must drop stale per-image overrides,
+        // otherwise they silently reappear when the user later turns per-image back on.
+        s.sameForAll = true
+        XCTAssertNil(s.images[0].settingsOverride)
+        XCTAssertNil(s.images[1].settingsOverride)
+    }
+
     func testPerImageOverrideIsolated() {
         let s = store(); s.sameForAll = false
         s.selectPreset(.icon)

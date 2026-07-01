@@ -13,7 +13,14 @@ public final class AppStore {
     public var framework: SnippetFramework = .html
     public var lazyLoading: Bool = true
     public var showUpdate: Bool = false
-    public var sameForAll: Bool = true
+    public var sameForAll: Bool = true {
+        didSet {
+            // Returning to "one setting for all" drops per-image overrides so they don't
+            // silently reappear when the user later switches per-image mode back on.
+            guard sameForAll, !oldValue else { return }
+            for i in images.indices { images[i].settingsOverride = nil }
+        }
+    }
     public var availableUpdate: ReleaseInfo? = nil
 
     /// Max images encoded concurrently (bounded to protect memory — each large image ~48MB RGBA).

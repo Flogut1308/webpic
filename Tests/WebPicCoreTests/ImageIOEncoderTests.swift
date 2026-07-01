@@ -21,6 +21,16 @@ final class ImageIOEncoderTests: XCTestCase {
         return ctx.makeImage()!
     }
 
+    /// In the real pipeline `process()` hands the SAME metadata dict to every encoder, so the
+    /// WebP-private XMP key rides along to ImageIO too. It must not corrupt the JPEG output.
+    func testPrivateXMPKeyInMetadataIsHarmless() throws {
+        let img = Self.noisyImage(48, 32)
+        let meta: [CFString: Any] = [WebPEncoder.xmpDataKey: Data("<x:xmpmeta/>".utf8)]
+        let data = try ImageIOEncoder(format: .jpeg).encode(img, quality: 0.8, metadata: meta)
+        XCTAssertEqual(decodeDims(data)?.0, 48)
+        XCTAssertEqual(decodeDims(data)?.1, 32)
+    }
+
     private func decodeDims(_ data: Data) -> (Int, Int)? {
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
               let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any],

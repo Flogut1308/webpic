@@ -44,6 +44,12 @@ public struct ImageProcessor: Sendable {
         // Pixels are color-converted (sRGB/P3) before encode, so the SOURCE color profile no
         // longer describes them — drop it and let the destination write the converted profile.
         props[kCGImagePropertyProfileName] = nil
+        // XMP isn't part of the property dict — grab the raw packet so encoders that need it
+        // (WebP, via WebPMux) can re-embed it. Namespaced key; ImageIO destinations ignore it.
+        if let md = CGImageSourceCopyMetadataAtIndex(s, 0, nil),
+           let xmp = CGImageMetadataCreateXMPData(md, nil) as Data?, !xmp.isEmpty {
+            props[WebPEncoder.xmpDataKey] = xmp
+        }
         return props
     }
     private func orientedImage(from src: CGImageSource) -> CGImage? {
