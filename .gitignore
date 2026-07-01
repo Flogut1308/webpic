@@ -19,3 +19,7 @@ dist/
 
 # macOS
 .DS_Store
+
+# Local design-reference working copy & zip (kept out of git; canonical copy lives in docs/design-reference/)
+.design-reference/
+*.zip
