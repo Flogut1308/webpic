@@ -1,3 +1,3 @@
 public enum WebPicCore {
-    public static let version = "2.7"
+    public static let version = "2.8"
 }

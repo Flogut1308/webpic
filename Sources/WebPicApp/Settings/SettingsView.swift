@@ -10,50 +10,61 @@ struct SettingsView: View {
     @AppStorage("wp.previewPanelWidth") private var panelWidth: Double = 300
     private let minPanel: Double = 240, maxPanel: Double = 440
 
-    var body: some View {
-        HStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        WPSectionLabel(text: "Ausgabe")
-                        Picker("", selection: $store.activeSettings.outputMode) {
-                            Text("Einzelbild").tag(OutputMode.single)
-                            Text("Responsive Set").tag(OutputMode.responsive)
-                            Text("Nur Konvertierung").tag(OutputMode.convert)
-                        }.pickerStyle(.segmented).labelsHidden()
-                    }
-                    VStack(alignment: .leading, spacing: 0) {
-                        WPSectionLabel(text: "Preset")
-                        PresetCards(store: store)
-                    }
-                    VStack(alignment: .leading, spacing: 0) {
-                        WPSectionLabel(text: "Format")
-                        FormatChips(store: store)
-                    }
-                    if let img = store.selected {
-                        CompressionCard(store: store, image: img)
-                    }
-                    if store.activeSettings.outputMode == .responsive {
-                        BreakpointsCard(store: store)
-                    }
-                    AdvancedCard(store: store)
-                }
-                .frame(maxWidth: 720, alignment: .leading)
-                .padding(.horizontal, 28).padding(.vertical, 26)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(p.grouped)
+    private let minMain: Double = 380   // keep the settings column usable at any panel width
 
-            if let img = store.selected {
-                PanelSplitter(width: $panelWidth, min: minPanel, max: maxPanel).environment(\.wpPalette, p)
+    var body: some View {
+        GeometryReader { geo in
+            // Clamp the panel to the available width so a fixed-width panel can never be pushed
+            // past the right window edge (which clipped its right padding at wide windows).
+            let hasPanel = store.selected != nil
+            let want = Swift.min(Swift.max(panelWidth, minPanel), maxPanel)
+            let panelW = hasPanel ? Swift.max(200, Swift.min(want, geo.size.width - 8 - minMain)) : 0
+
+            HStack(spacing: 0) {
                 ScrollView {
-                    PreviewColumn(image: img, store: store)
-                        .padding(.horizontal, 20).padding(.vertical, 18)
+                    VStack(alignment: .leading, spacing: 22) {
+                        VStack(alignment: .leading, spacing: 0) {
+                            WPSectionLabel(text: "Ausgabe")
+                            Picker("", selection: $store.activeSettings.outputMode) {
+                                Text("Einzelbild").tag(OutputMode.single)
+                                Text("Responsive Set").tag(OutputMode.responsive)
+                                Text("Nur Konvertierung").tag(OutputMode.convert)
+                            }.pickerStyle(.segmented).labelsHidden()
+                        }
+                        VStack(alignment: .leading, spacing: 0) {
+                            WPSectionLabel(text: "Preset")
+                            PresetCards(store: store)
+                        }
+                        VStack(alignment: .leading, spacing: 0) {
+                            WPSectionLabel(text: "Format")
+                            FormatChips(store: store)
+                        }
+                        if let img = store.selected {
+                            CompressionCard(store: store, image: img)
+                        }
+                        if store.activeSettings.outputMode == .responsive {
+                            BreakpointsCard(store: store)
+                        }
+                        AdvancedCard(store: store)
+                    }
+                    .frame(maxWidth: 720, alignment: .leading)
+                    .padding(.horizontal, 28).padding(.vertical, 26)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(width: panelWidth)
-                .frame(maxHeight: .infinity)
-                .background(p.window)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(p.grouped)
+
+                if let img = store.selected {
+                    PanelSplitter(width: $panelWidth, min: minPanel, max: maxPanel).environment(\.wpPalette, p)
+                    ScrollView {
+                        PreviewColumn(image: img, store: store)
+                            .padding(.horizontal, 20).padding(.vertical, 18)
+                    }
+                    .frame(width: panelW)
+                    .frame(maxHeight: .infinity)
+                    .background(p.window)
+                    .clipped()
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
