@@ -1,17 +1,17 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-3-settings.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 18, "subject": "M3 Task 0: Settings model refactor", "status": "pending",
+    { "id": 0, "nativeTaskId": 18, "subject": "M3 Task 0: Settings model refactor", "status": "completed",
       "description": "Independent compressionMode/quality/targetValue/targetUnit; update default + tests.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/Enums.swift\", \"Sources/WebPicCore/Models/Settings.swift\", \"Tests/WebPicCoreTests/SettingsTests.swift\"], \"verifyCommand\": \"swift test --filter SettingsTests\", \"acceptanceCriteria\": [\"independent fields\", \"default correct\", \"codable round-trip\", \"no stale refs\"]}\n```" },
-    { "id": 1, "nativeTaskId": 19, "subject": "M3 Task 1: EstimationService", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 19, "subject": "M3 Task 1: EstimationService", "status": "completed", "blockedBy": [0],
       "description": "Pure heuristics: formatFactor/primaryFormat/estimatedBytes/targetBytes/targetError/autoQuality/newDimensions/savingsPercent.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Estimation/EstimationService.swift\", \"Tests/WebPicCoreTests/EstimationServiceTests.swift\"], \"verifyCommand\": \"swift test --filter EstimationServiceTests\", \"acceptanceCriteria\": [\"exact reference formulas\", \"quality+target estimate\", \"targetError\", \"autoQuality clamp\"]}\n```" },
-    { "id": 2, "nativeTaskId": 20, "subject": "M3 Task 2: AppStore settings intents", "status": "pending", "blockedBy": [0],
+    { "id": 2, "nativeTaskId": 20, "subject": "M3 Task 2: AppStore settings intents", "status": "completed", "blockedBy": [0],
       "description": "selectPreset (sets quality) + toggleFormat; persist.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/AppStore.swift\", \"Tests/WebPicCoreTests/AppStoreSettingsTests.swift\"], \"verifyCommand\": \"swift test --filter AppStoreSettingsTests\", \"acceptanceCriteria\": [\"selectPreset sets quality\", \"toggleFormat flips\", \"persist\"]}\n```" },
-    { "id": 3, "nativeTaskId": 21, "subject": "M3 Task 3: SettingsView scaffold + Ausgabe/Preset/Format + preview", "status": "pending", "blockedBy": [1, 2],
+    { "id": 3, "nativeTaskId": 21, "subject": "M3 Task 3: SettingsView scaffold + Ausgabe/Preset/Format + preview", "status": "completed", "blockedBy": [1, 2],
       "description": "Two-column SettingsView; Ausgabe segmented, PresetCards, FormatChips, PreviewColumn; route settings tab; ImageFormat.displayName.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Settings/SettingsView.swift\", \"Sources/WebPicApp/Settings/PresetCards.swift\", \"Sources/WebPicApp/Settings/FormatChips.swift\", \"Sources/WebPicApp/Settings/PreviewColumn.swift\", \"Sources/WebPicApp/Shared/WPSection.swift\", \"Sources/WebPicApp/MainView.swift\", \"Sources/WebPicCore/Models/Enums.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"Ausgabe/Preset/Format\", \"preview live\", \"changes update preview\", \"build ok\"]}\n```" },
-    { "id": 4, "nativeTaskId": 22, "subject": "M3 Task 4: Compression card", "status": "pending", "blockedBy": [3],
+    { "id": 4, "nativeTaskId": 22, "subject": "M3 Task 4: Compression card", "status": "completed", "blockedBy": [3],
       "description": "Komprimierung card: mode segmented; quality slider + estimate; target field error/ok. feasibleMinPublic.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Settings/CompressionCard.swift\", \"Sources/WebPicApp/Settings/SettingsView.swift\", \"Sources/WebPicCore/Estimation/EstimationService.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"mode segmented\", \"quality slider+estimate\", \"target error/ok\", \"build ok\"]}\n```" },
-    { "id": 5, "nativeTaskId": 23, "subject": "M3 Task 5: Breakpoints + Advanced + screenshot", "status": "pending", "blockedBy": [4],
+    { "id": 5, "nativeTaskId": 23, "subject": "M3 Task 5: Breakpoints + Advanced + screenshot", "status": "completed", "blockedBy": [4],
       "description": "Responsive BreakpointsCard + collapsible AdvancedCard; final assembly + screenshot.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Settings/BreakpointsCard.swift\", \"Sources/WebPicApp/Settings/AdvancedCard.swift\", \"Sources/WebPicApp/Settings/SettingsView.swift\"], \"verifyCommand\": \"swift build && bash Scripts/bundle.sh\", \"acceptanceCriteria\": [\"breakpoints responsive-only\", \"advanced 3 controls\", \"screenshot verified\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T18:45:00Z"
