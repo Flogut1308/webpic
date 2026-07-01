@@ -95,10 +95,13 @@ struct PreviewColumn: View {
     }
 
     @ViewBuilder private func row(_ label: String, _ value: String, mono: Bool) -> some View {
-        HStack {
-            Text(label).font(.system(size: 12)).foregroundStyle(p.t2)
-            Spacer()
-            Text(value).font(mono ? .system(size: 12).monospacedDigit() : .system(size: 12, weight: .medium)).foregroundStyle(p.t1)
+        HStack(spacing: 8) {
+            Text(label).font(.system(size: 12)).foregroundStyle(p.t2).fixedSize()
+            Spacer(minLength: 8)
+            // Shrink long values (e.g. the resolution) rather than overflowing and clipping the
+            // panel's right padding when it's narrow.
+            Text(value).font(mono ? .system(size: 12).monospacedDigit() : .system(size: 12, weight: .medium))
+                .foregroundStyle(p.t1).lineLimit(1).minimumScaleFactor(0.6)
         }
         .padding(.top, 8)
     }
