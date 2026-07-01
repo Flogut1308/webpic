@@ -48,7 +48,8 @@ struct SettingsView: View {
             if let img = store.selected {
                 PanelSplitter(width: $panelWidth, min: minPanel, max: maxPanel).environment(\.wpPalette, p)
                 ScrollView {
-                    PreviewColumn(image: img, store: store).padding(16)
+                    PreviewColumn(image: img, store: store)
+                        .padding(.horizontal, 20).padding(.vertical, 18)
                 }
                 .frame(width: panelWidth)
                 .frame(maxHeight: .infinity)
@@ -60,6 +61,7 @@ struct SettingsView: View {
 }
 
 /// A draggable vertical splitter to resize the preview panel — the usual "drag the edge" affordance.
+/// It's a full-width (8pt) strip so it's actually grabbable, with a hairline divider on its left edge.
 private struct PanelSplitter: View {
     @Binding var width: Double
     let min: Double
@@ -69,24 +71,25 @@ private struct PanelSplitter: View {
     @State private var hovering = false
 
     var body: some View {
-        Rectangle().fill(p.sep)
-            .frame(width: 1)
-            .frame(maxHeight: .infinity)
-            .overlay {
-                Rectangle().fill(hovering ? p.accent.opacity(0.35) : .clear).frame(width: 3)
+        ZStack {
+            p.window                                     // blends into the panel
+            Rectangle().fill(hovering ? p.accent : p.sep)
+                .frame(width: hovering ? 2 : 1)
+                .frame(maxHeight: .infinity)
+        }
+        .frame(width: 8)
+        .frame(maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onHover { inside in
+            hovering = inside
+            if inside { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
+        }
+        .gesture(DragGesture(minimumDistance: 0)
+            .onChanged { v in
+                if dragStart == nil { dragStart = width }
+                // Dragging left widens the panel, right narrows it.
+                width = Swift.min(Swift.max((dragStart ?? width) - Double(v.translation.width), min), max)
             }
-            .contentShape(Rectangle().inset(by: -5))   // wider hit area than the visible hairline
-            .onHover { inside in
-                hovering = inside
-                if inside { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
-            }
-            .gesture(DragGesture(minimumDistance: 1)
-                .onChanged { v in
-                    let base = dragStart ?? width
-                    if dragStart == nil { dragStart = width }
-                    // Dragging left widens the panel, right narrows it.
-                    width = Swift.min(Swift.max(base - Double(v.translation.width), min), max)
-                }
-                .onEnded { _ in dragStart = nil })
+            .onEnded { _ in dragStart = nil })
     }
 }
