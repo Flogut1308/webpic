@@ -24,6 +24,8 @@ public struct WebPicImage: Identifiable, Equatable, Sendable {
     public var sourceData: Data?
     /// Optimized outputs (populated by batch processing); empty until processed.
     public var results: [EncodeResult] = []
+    /// Per-image settings override used when "Alle gleich behandeln" is off; nil = use global.
+    public var settingsOverride: Settings?
 
     public init(id: String, name: String, pixelWidth: Int, pixelHeight: Int,
                 byteSize: Int, status: ImageStatus, url: URL? = nil,

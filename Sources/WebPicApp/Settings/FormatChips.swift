@@ -11,7 +11,7 @@ struct FormatChips: View {
     var body: some View {
         HStack(spacing: 8) {
             ForEach(defs, id: \.0) { fmt, label in
-                let on = store.settings.formats.contains(fmt)
+                let on = store.activeSettings.formats.contains(fmt)
                 Button { store.toggleFormat(fmt) } label: {
                     HStack(spacing: 8) {
                         RoundedRectangle(cornerRadius: 5, style: .continuous)

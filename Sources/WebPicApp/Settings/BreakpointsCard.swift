@@ -14,9 +14,9 @@ struct BreakpointsCard: View {
                 .padding(.horizontal, 16).padding(.top, 13).padding(.bottom, 11)
             Divider()
             ForEach(defs, id: \.0) { w, note in
-                let on = store.settings.breakpoints.contains(w)
+                let on = store.activeSettings.breakpoints.contains(w)
                 Button {
-                    if on { store.settings.breakpoints.remove(w) } else { store.settings.breakpoints.insert(w) }
+                    if on { store.activeSettings.breakpoints.remove(w) } else { store.activeSettings.breakpoints.insert(w) }
                 } label: {
                     HStack(spacing: 11) {
                         checkbox(on)
@@ -37,13 +37,13 @@ struct BreakpointsCard: View {
                     .frame(width: 82, height: 28).padding(.horizontal, 9)
                     .background(p.field, in: RoundedRectangle(cornerRadius: 7))
                     .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(p.ctrlBorder, lineWidth: 0.5))
-                    .onChange(of: customText) { _, v in store.settings.customBreakpoint = Int(v) }
+                    .onChange(of: customText) { _, v in store.activeSettings.customBreakpoint = Int(v) }
                 Text("w").font(.system(size: 12).monospacedDigit()).foregroundStyle(p.t3)
             }
             .padding(.horizontal, 16).padding(.vertical, 11)
         }
         .wpCard(p)
-        .onAppear { if let c = store.settings.customBreakpoint { customText = String(c) } }
+        .onAppear { if let c = store.activeSettings.customBreakpoint { customText = String(c) } }
     }
 
     @ViewBuilder private func checkbox(_ on: Bool) -> some View {

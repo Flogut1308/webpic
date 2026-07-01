@@ -19,7 +19,7 @@ struct PresetCards: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(Preset.all) { preset in
-                    let on = store.settings.preset == preset.key
+                    let on = store.activeSettings.preset == preset.key
                     Button { store.selectPreset(preset.key) } label: {
                         VStack(alignment: .leading, spacing: 2) {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)

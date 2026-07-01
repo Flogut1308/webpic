@@ -103,17 +103,41 @@ public final class AppStore {
         tab = .settings
     }
 
+    /// Effective settings for a specific image: its override when per-image mode is on, else global.
+    public func effectiveSettings(for image: WebPicImage) -> Settings {
+        (!sameForAll ? image.settingsOverride : nil) ?? settings
+    }
+
+    /// The settings the UI edits: the selected image's override when per-image mode is on, else global.
+    public var activeSettings: Settings {
+        get {
+            if !sameForAll, let sel = selected, let o = sel.settingsOverride { return o }
+            return settings
+        }
+        set {
+            if !sameForAll, let id = selectedID, let idx = images.firstIndex(where: { $0.id == id }) {
+                images[idx].settingsOverride = newValue
+            } else {
+                settings = newValue
+            }
+        }
+    }
+
     public func selectPreset(_ key: Preset.Key) {
-        settings.preset = key
-        settings.quality = Preset.defaultQuality(for: key)
+        var s = activeSettings
+        s.preset = key
+        s.quality = Preset.defaultQuality(for: key)
+        activeSettings = s
     }
 
     public func toggleFormat(_ format: ImageFormat) {
-        if settings.formats.contains(format) {
-            settings.formats.remove(format)
+        var s = activeSettings
+        if s.formats.contains(format) {
+            s.formats.remove(format)
         } else {
-            settings.formats.insert(format)
+            s.formats.insert(format)
         }
+        activeSettings = s
     }
 
     public func persistSettings() {
@@ -136,7 +160,7 @@ public final class AppStore {
         guard let img = selected, let source = encodeSource(for: img) else { results = []; chosenQuality = nil; return }
         let targetID = img.id                 // guard against fast image switches
         processing = true
-        let settings = self.settings
+        let settings = effectiveSettings(for: img)
         let output = await Task.detached(priority: .userInitiated) { () -> (results: [EncodeResult], chosen: Int?) in
             let proc = ImageProcessor()
             guard let cg = proc.loadCGImage(source) else { return ([], nil) }
@@ -187,16 +211,15 @@ public final class AppStore {
     /// only processes images not already done (so completed cards don't flash back to "Wartet").
     @MainActor
     public func processAll() async {
-        let settings = self.settings
-        let hash = settings.hashValueString
+        let hash = images.map { effectiveSettings(for: $0).hashValueString }.joined(separator: "|")
         let full = hash != batchSettingsHash          // settings changed → reprocess all
         batchSettingsHash = hash
-        let work: [(id: String, source: ImageProcessor.EncodeSource)] = images.compactMap { img in
+        let work: [(id: String, source: ImageProcessor.EncodeSource, settings: Settings)] = images.compactMap { img in
             guard let source = encodeSource(for: img) else { return nil }
             if !full, case .done = img.status, !img.results.isEmpty { return nil }  // keep done work
-            return (img.id, source)
+            return (img.id, source, effectiveSettings(for: img))
         }
-        for (id, _) in work { setStatus(id, .waiting); setResults(id, []) }
+        for (id, _, _) in work { setStatus(id, .waiting); setResults(id, []) }
 
         var iterator = work.makeIterator()
 
@@ -205,7 +228,7 @@ public final class AppStore {
                 guard let next = iterator.next() else { return }
                 setStatus(next.id, .processing(0))
                 group.addTask {
-                    let out = await self.encode(source: next.source, settings: settings)
+                    let out = await self.encode(source: next.source, settings: next.settings)
                     return (next.id, out)
                 }
             }

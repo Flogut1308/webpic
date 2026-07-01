@@ -11,7 +11,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 0) {
                         WPSectionLabel(text: "Ausgabe")
-                        Picker("", selection: $store.settings.outputMode) {
+                        Picker("", selection: $store.activeSettings.outputMode) {
                             Text("Einzelbild").tag(OutputMode.single)
                             Text("Responsive Set").tag(OutputMode.responsive)
                             Text("Nur Konvertierung").tag(OutputMode.convert)
@@ -28,7 +28,7 @@ struct SettingsView: View {
                     if let img = store.selected {
                         CompressionCard(store: store, image: img)
                     }
-                    if store.settings.outputMode == .responsive {
+                    if store.activeSettings.outputMode == .responsive {
                         BreakpointsCard(store: store)
                     }
                     AdvancedCard(store: store)

@@ -6,10 +6,10 @@ struct PreviewColumn: View {
     @Bindable var store: AppStore
     @Environment(\.wpPalette) private var p
 
-    private var estBytes: Int { EstimationService.estimatedBytes(image: image, settings: store.settings) }
-    private var savings: Int { EstimationService.savingsPercent(image: image, settings: store.settings) }
-    private var newDims: (width: Int, height: Int) { EstimationService.newDimensions(image: image, settings: store.settings) }
-    private var primary: ImageFormat { EstimationService.primaryFormat(store.settings.formats) }
+    private var estBytes: Int { EstimationService.estimatedBytes(image: image, settings: store.activeSettings) }
+    private var savings: Int { EstimationService.savingsPercent(image: image, settings: store.activeSettings) }
+    private var newDims: (width: Int, height: Int) { EstimationService.newDimensions(image: image, settings: store.activeSettings) }
+    private var primary: ImageFormat { EstimationService.primaryFormat(store.activeSettings.formats) }
 
     var body: some View {
         VStack(spacing: 0) {

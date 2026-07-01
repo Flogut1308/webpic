@@ -22,19 +22,19 @@ struct AdvancedCard: View {
                 Divider()
                 row {
                     labelPair("Metadaten behalten", "EXIF, Copyright & Farbprofil")
-                    Toggle("", isOn: $store.settings.keepMetadata).labelsHidden().toggleStyle(.switch).tint(p.accent)
+                    Toggle("", isOn: $store.activeSettings.keepMetadata).labelsHidden().toggleStyle(.switch).tint(p.accent)
                 }
                 Divider()
                 row {
                     labelPair("Farbraum", "Für Web meist sRGB empfohlen")
-                    Picker("", selection: $store.settings.colorSpace) {
+                    Picker("", selection: $store.activeSettings.colorSpace) {
                         Text("sRGB").tag(ColorSpace.sRGB); Text("Display P3").tag(ColorSpace.displayP3)
                     }.pickerStyle(.segmented).labelsHidden().frame(width: 150)
                 }
                 Divider()
                 row {
                     labelPair("Dateinamen-Schema", "Platzhalter: {name} {w} {format}")
-                    TextField("", text: $store.settings.filenameScheme)
+                    TextField("", text: $store.activeSettings.filenameScheme)
                         .textFieldStyle(.plain).font(.system(size: 12).monospacedDigit())
                         .frame(width: 200, height: 28).padding(.horizontal, 9)
                         .background(p.field, in: RoundedRectangle(cornerRadius: 7))
