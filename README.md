@@ -26,9 +26,11 @@ bash Scripts/make-dmg.sh   # → dist/WebPic.dmg (app + Applications symlink)
 
 1. Download `WebPic.dmg` from the [Releases](https://github.com/Flogut1308/webpic/releases) page and open it.
 2. Drag **WebPic** onto **Applications**.
-3. **First launch — the app is not notarized** (it isn't code-signed with an Apple Developer ID yet), so macOS Gatekeeper will warn "unidentified developer". Bypass it once:
-   - **Right-click** (or Control-click) **WebPic.app → Open → Open**, or
-   - run `xattr -dr com.apple.quarantine /Applications/WebPic.app`
+3. **First launch — the app is ad-hoc signed but not notarized** (no Apple Developer ID yet), so macOS Gatekeeper blocks it once. Bypass it:
+   - **Simplest (reliable on every macOS incl. 15 Sequoia / 26 Tahoe):** run
+     `xattr -dr com.apple.quarantine /Applications/WebPic.app`, then open normally.
+   - **Or via UI:** double-click WebPic → dismiss the block → **System Settings → Privacy & Security** → scroll down → **"Open Anyway"** → confirm.
+   - ⚠️ On macOS 15+/26 the old **right-click → Open** shortcut no longer bypasses Gatekeeper — use one of the two options above.
 
 WebPic checks GitHub Releases on launch and, when a newer version exists, shows an in-app banner; "Installieren" opens the latest DMG download.
 

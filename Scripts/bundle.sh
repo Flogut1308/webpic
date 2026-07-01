@@ -24,4 +24,9 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>NSPhotoLibraryUsageDescription</key><string>WebPic importiert ausgewählte Fotos, um sie fürs Web zu optimieren.</string>
 </dict></plist>
 PLIST
-echo "Built $APP"
+# Ad-hoc sign the whole bundle. swift build only linker-signs the executable, which leaves the
+# bundle signature inconsistent (Info.plist unbound) — on Apple Silicon / macOS 15+ that reads as
+# "app is damaged" with no override. A proper ad-hoc signature lets a locally-built (unquarantined)
+# copy launch cleanly without an Apple Developer account.
+codesign --force --deep -s - "$APP"
+echo "Built + ad-hoc signed $APP"
