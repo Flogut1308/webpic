@@ -28,6 +28,10 @@ struct SettingsView: View {
                     if let img = store.selected {
                         CompressionCard(store: store, image: img)
                     }
+                    if store.settings.outputMode == .responsive {
+                        BreakpointsCard(store: store)
+                    }
+                    AdvancedCard(store: store)
                 }
                 .frame(maxWidth: 680, alignment: .leading)
                 .padding(.horizontal, 28).padding(.vertical, 26)
