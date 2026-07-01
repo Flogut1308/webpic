@@ -33,7 +33,7 @@ struct CompareView: View {
             }
         }
         .padding(24).frame(maxWidth: .infinity, maxHeight: .infinity).background(p.grouped)
-        .task(id: "\(store.selectedID ?? "")-\(store.settings.hashValueString)") { await store.processSelected() }
+        .task(id: "\(store.selectedID ?? "")-\(store.selected.map { store.effectiveSettings(for: $0).hashValueString } ?? "")") { await store.processSelected() }
     }
 
     private func savings(_ img: WebPicImage, _ r: EncodeResult) -> Int {

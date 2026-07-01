@@ -25,7 +25,7 @@ struct ExportView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity).background(p.grouped)
-        .task(id: "\(store.selectedID ?? "")-\(store.settings.hashValueString)") {
+        .task(id: "\(store.selectedID ?? "")-\(store.selected.map { store.effectiveSettings(for: $0).hashValueString } ?? "")") {
             await store.processSelected()
         }
     }

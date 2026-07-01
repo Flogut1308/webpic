@@ -115,7 +115,9 @@ public final class AppStore {
             return settings
         }
         set {
-            if !sameForAll, let id = selectedID, let idx = images.firstIndex(where: { $0.id == id }) {
+            // Resolve the target via `selected` (same fallback the getter uses) so the read
+            // and write targets always match — avoids editing global while displaying an override.
+            if !sameForAll, let id = selected?.id, let idx = images.firstIndex(where: { $0.id == id }) {
                 images[idx].settingsOverride = newValue
             } else {
                 settings = newValue

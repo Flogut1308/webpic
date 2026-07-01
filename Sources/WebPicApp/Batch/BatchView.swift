@@ -36,6 +36,6 @@ struct BatchView: View {
     }
 
     private var batchKey: String {
-        store.images.map(\.id).joined(separator: ",") + "|" + store.settings.hashValueString
+        store.images.map { "\($0.id):\(store.effectiveSettings(for: $0).hashValueString)" }.joined(separator: ",")
     }
 }
