@@ -94,6 +94,19 @@ public final class AppStore {
         tab = .settings
     }
 
+    public func selectPreset(_ key: Preset.Key) {
+        settings.preset = key
+        settings.quality = Preset.defaultQuality(for: key)
+    }
+
+    public func toggleFormat(_ format: ImageFormat) {
+        if settings.formats.contains(format) {
+            settings.formats.remove(format)
+        } else {
+            settings.formats.insert(format)
+        }
+    }
+
     public func persistSettings() {
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: Self.settingsKey)
