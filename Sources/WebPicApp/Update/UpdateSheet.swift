@@ -42,7 +42,7 @@ struct UpdateSheet: View {
                     Button {
                         if let url = info?.downloadURL { NSWorkspace.shared.open(url) }
                         store.sheet = nil
-                    } label: { Text("Installieren & neu starten").frame(maxWidth: .infinity) }
+                    } label: { Text("Update herunterladen").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent).controlSize(.large).tint(p.accent)
                 }.padding(20)
 

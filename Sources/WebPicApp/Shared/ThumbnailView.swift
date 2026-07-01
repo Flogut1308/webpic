@@ -8,7 +8,7 @@ struct ThumbnailView: View {
 
     var body: some View {
         Group {
-            if let data = image.thumbnailData, let ns = NSImage(data: data) {
+            if let data = image.thumbnailData, let ns = ThumbnailCache.image(id: image.id, data: data) {
                 Image(nsImage: ns)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
