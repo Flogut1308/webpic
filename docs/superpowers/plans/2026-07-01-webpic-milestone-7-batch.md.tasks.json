@@ -1,0 +1,10 @@
+{
+  "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-7-batch.md",
+  "tasks": [
+    { "id": 0, "nativeTaskId": 39, "subject": "M7 Task 0: Batch engine (results + processAll)", "status": "pending",
+      "description": "WebPicImage.results + bounded concurrent processAll.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/WebPicImage.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Tests/WebPicCoreTests/AppStoreBatchTests.swift\"], \"verifyCommand\": \"swift test --filter AppStoreBatchTests\", \"acceptanceCriteria\": [\"results field\", \"processAll .done+results\", \"bad->.error\", \"cap 1..4\", \"sameForAll true\"]}\n```" },
+    { "id": 1, "nativeTaskId": 40, "subject": "M7 Task 1: Batch grid UI + wiring", "status": "pending", "blockedBy": [0],
+      "description": "BatchView + BatchCard; route .batch; processAll on entry.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Batch/BatchView.swift\", \"Sources/WebPicApp/Batch/BatchCard.swift\", \"Sources/WebPicApp/MainView.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"header toggle+entfernen\", \"status card grid\", \"processAll live\"]}\n```" }
+  ],
+  "lastUpdated": "2026-07-01T21:30:00Z"
+}
