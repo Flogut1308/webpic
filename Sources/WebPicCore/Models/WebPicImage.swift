@@ -15,7 +15,8 @@ public struct WebPicImage: Identifiable, Equatable, Sendable {
     public var byteSize: Int
     public var status: ImageStatus
     public var url: URL?
-    /// Mock gradient key used until real thumbnails exist (M2). Hex list.
+    /// Persistent gradient fallback (hex list) rendered when `thumbnailData` is nil,
+    /// e.g. for mock/seed images.
     public var gradient: [UInt32]
     /// PNG thumbnail bytes for real imports; nil → render the gradient placeholder.
     public var thumbnailData: Data?

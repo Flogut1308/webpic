@@ -75,6 +75,7 @@ public final class AppStore {
                 url: nil, thumbnailData: imported.thumbnailPNG))
         }
         if selectedID == nil { selectedID = images.first?.id }
+        if tab != .batch { tab = .settings }
     }
 
     public func select(id: String) {
