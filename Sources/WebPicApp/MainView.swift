@@ -14,7 +14,7 @@ struct MainView: View {
             } else if store.tab == .export {
                 ExportView(store: store)
             } else if store.tab == .batch {
-                SettingsPlaceholderView()   // Batch = M7
+                BatchView(store: store)
             } else {
                 SettingsView(store: store)
             }
