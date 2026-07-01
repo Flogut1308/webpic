@@ -20,6 +20,15 @@ public struct ImageProcessor: Sendable {
         guard let src = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         return orientedImage(from: src)
     }
+
+    public enum EncodeSource: Sendable { case url(URL); case data(Data) }
+
+    public func loadCGImage(_ source: EncodeSource) -> CGImage? {
+        switch source {
+        case .url(let u):  return loadCGImage(url: u)
+        case .data(let d): return loadCGImage(data: d)
+        }
+    }
     private func orientedImage(from src: CGImageSource) -> CGImage? {
         guard let cg = CGImageSourceCreateImageAtIndex(src, 0, nil) else { return nil }
         let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any]

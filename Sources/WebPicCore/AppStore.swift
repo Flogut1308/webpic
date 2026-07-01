@@ -80,7 +80,8 @@ public final class AppStore {
                 id: UUID().uuidString, name: imported.name,
                 pixelWidth: imported.pixelWidth, pixelHeight: imported.pixelHeight,
                 byteSize: imported.byteSize, status: .waiting,
-                url: nil, thumbnailData: imported.thumbnailPNG))
+                url: nil, thumbnailData: imported.thumbnailPNG,
+                sourceData: item.data))
         }
         if selectedID == nil { selectedID = images.first?.id }
         if tab != .batch { tab = .settings }
@@ -121,16 +122,24 @@ public final class AppStore {
         }
     }
 
-    /// Run the real encoder on the selected (URL-backed) image; caches results.
+    /// Resolve the bytes to (re-)encode an image from: its file URL if present, else its retained
+    /// import bytes (data/Photos imports have no URL to re-read from disk).
+    private func encodeSource(for image: WebPicImage) -> ImageProcessor.EncodeSource? {
+        if let url = image.url { return .url(url) }
+        if let data = image.sourceData { return .data(data) }
+        return nil
+    }
+
+    /// Run the real encoder on the selected image; caches results.
     @MainActor
     public func processSelected() async {
-        guard let img = selected, let url = img.url else { results = []; chosenQuality = nil; return }
+        guard let img = selected, let source = encodeSource(for: img) else { results = []; chosenQuality = nil; return }
         let targetID = img.id                 // guard against fast image switches
         processing = true
         let settings = self.settings
         let output = await Task.detached(priority: .userInitiated) { () -> (results: [EncodeResult], chosen: Int?) in
             let proc = ImageProcessor()
-            guard let cg = proc.loadCGImage(url: url) else { return ([], nil) }
+            guard let cg = proc.loadCGImage(source) else { return ([], nil) }
             if settings.compressionMode == .target {
                 if let t = try? proc.processForTarget(source: cg, settings: settings) {
                     return (t.results, t.chosenQuality)
@@ -156,11 +165,11 @@ public final class AppStore {
         if let i = images.firstIndex(where: { $0.id == id }) { images[i].results = results }
     }
 
-    /// Encode one URL-backed image off-main; returns nil on failure (bad/unreadable image).
-    private func encode(url: URL, settings: Settings) async -> [EncodeResult]? {
+    /// Encode one image off-main; returns nil on failure (bad/unreadable image).
+    private func encode(source: ImageProcessor.EncodeSource, settings: Settings) async -> [EncodeResult]? {
         await Task.detached(priority: .userInitiated) { () -> [EncodeResult]? in
             let proc = ImageProcessor()
-            guard let cg = proc.loadCGImage(url: url) else { return nil }
+            guard let cg = proc.loadCGImage(source) else { return nil }
             if settings.compressionMode == .target {
                 return (try? proc.processForTarget(source: cg, settings: settings))?.results
             } else {
@@ -171,7 +180,7 @@ public final class AppStore {
 
     @ObservationIgnored private var batchSettingsHash = ""
 
-    /// Process URL-backed images concurrently (bounded), updating status + results.
+    /// Process images concurrently (bounded), updating status + results.
     /// On a settings change, re-encodes everything; on add/remove with unchanged settings,
     /// only processes images not already done (so completed cards don't flash back to "Wartet").
     @MainActor
@@ -180,10 +189,10 @@ public final class AppStore {
         let hash = settings.hashValueString
         let full = hash != batchSettingsHash          // settings changed → reprocess all
         batchSettingsHash = hash
-        let work: [(id: String, url: URL)] = images.compactMap { img in
-            guard let url = img.url else { return nil }
+        let work: [(id: String, source: ImageProcessor.EncodeSource)] = images.compactMap { img in
+            guard let source = encodeSource(for: img) else { return nil }
             if !full, case .done = img.status, !img.results.isEmpty { return nil }  // keep done work
-            return (img.id, url)
+            return (img.id, source)
         }
         for (id, _) in work { setStatus(id, .waiting); setResults(id, []) }
 
@@ -194,7 +203,7 @@ public final class AppStore {
                 guard let next = iterator.next() else { return }
                 setStatus(next.id, .processing(0))
                 group.addTask {
-                    let out = await self.encode(url: next.url, settings: settings)
+                    let out = await self.encode(source: next.source, settings: settings)
                     return (next.id, out)
                 }
             }
