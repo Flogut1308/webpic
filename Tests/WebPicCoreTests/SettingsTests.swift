@@ -4,7 +4,9 @@ import XCTest
 final class SettingsTests: XCTestCase {
     func testCodableRoundTrip() throws {
         var s = Settings.default
-        s.compression = .target(value: 200, unit: .kb)
+        s.compressionMode = .target
+        s.targetValue = "150"
+        s.targetUnit = .mb
         s.formats = [.webp, .avif]
         let data = try JSONEncoder().encode(s)
         let back = try JSONDecoder().decode(Settings.self, from: data)
@@ -23,6 +25,9 @@ final class SettingsTests: XCTestCase {
         XCTAssertEqual(s.outputMode, .single)
         XCTAssertEqual(s.preset, .hero)
         XCTAssertEqual(s.formats, [.webp, .jpeg])
-        XCTAssertEqual(s.compression, .quality(78))
+        XCTAssertEqual(s.compressionMode, .quality)
+        XCTAssertEqual(s.quality, 78)
+        XCTAssertEqual(s.targetValue, "200")
+        XCTAssertEqual(s.targetUnit, .kb)
     }
 }

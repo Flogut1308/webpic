@@ -4,7 +4,10 @@ public struct Settings: Codable, Equatable, Sendable {
     public var outputMode: OutputMode
     public var preset: Preset.Key
     public var formats: Set<ImageFormat>
-    public var compression: Compression
+    public var compressionMode: CompressionMode
+    public var quality: Int
+    public var targetValue: String
+    public var targetUnit: SizeUnit
     public var breakpoints: Set<Int>
     public var customBreakpoint: Int?
     public var colorSpace: ColorSpace
@@ -15,7 +18,10 @@ public struct Settings: Codable, Equatable, Sendable {
         outputMode: .single,
         preset: .hero,
         formats: [.webp, .jpeg],
-        compression: .quality(78),
+        compressionMode: .quality,
+        quality: 78,
+        targetValue: "200",
+        targetUnit: .kb,
         breakpoints: [400, 800, 1200],
         customBreakpoint: nil,
         colorSpace: .sRGB,

@@ -6,7 +6,4 @@ public enum ImageFormat: String, Codable, CaseIterable, Sendable { case webp, av
 public enum SizeUnit: String, Codable, Sendable { case kb, mb }
 public enum ColorSpace: String, Codable, Sendable { case sRGB, displayP3 }
 
-public enum Compression: Codable, Equatable, Sendable {
-    case quality(Int)
-    case target(value: Double, unit: SizeUnit)
-}
+public enum CompressionMode: String, Codable, CaseIterable, Sendable { case quality, target }
