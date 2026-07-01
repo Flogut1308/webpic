@@ -39,8 +39,8 @@ struct MainView: View {
                         .foregroundStyle(p.t3).lineLimit(1)
                 }
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 260, alignment: .leading)
-                .padding(.leading, 4)
+                .frame(maxWidth: 320, alignment: .leading)
+                .padding(.horizontal, 10).padding(.vertical, 4)
             }
             if store.tab != .batch {
                 ToolbarItem(placement: .principal) {

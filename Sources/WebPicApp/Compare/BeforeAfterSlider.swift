@@ -9,6 +9,7 @@ struct BeforeAfterSlider: View {
     @State private var fraction: CGFloat = 0.5
     @State private var scale: CGFloat = 1
     @State private var offset: CGSize = .zero
+    @State private var fractionDragStart: CGFloat?
     @GestureState private var gestureZoom: CGFloat = 1
     @GestureState private var gesturePan: CGSize = .zero
     @Environment(\.wpPalette) private var p
@@ -20,30 +21,38 @@ struct BeforeAfterSlider: View {
             let liveScale = clampScale(scale * gestureZoom)
             let zoomed = liveScale > 1.01
             let liveOffset = clampOffset(add(offset, gesturePan), scale: liveScale, size: geo.size)
+            let cx = geo.size.width / 2
+            // Screen-space x of the split, derived from the same transform the images use, so the
+            // handle stays on the seam — and stays draggable — even while zoomed and panned.
+            let dividerX = cx + (fraction * geo.size.width - cx) * liveScale + liveOffset.width
 
             ZStack(alignment: .topLeading) {
-                // Images, mask and divider all live in ONE group that is scaled/panned together,
-                // so the split line always stays locked to the same spot in the picture.
                 ZStack(alignment: .topLeading) {
                     Image(nsImage: after).resizable().aspectRatio(contentMode: .fill)
                         .frame(width: geo.size.width, height: geo.size.height).clipped()
                     Image(nsImage: before).resizable().aspectRatio(contentMode: .fill)
                         .frame(width: geo.size.width, height: geo.size.height).clipped()
                         .mask(alignment: .leading) { Rectangle().frame(width: geo.size.width * fraction) }
-                    Rectangle().fill(.white).frame(width: 2).frame(maxHeight: .infinity)
-                        .position(x: geo.size.width * fraction, y: geo.size.height / 2)
-                    if !zoomed {
-                        Circle().fill(.white).frame(width: 36, height: 36).shadow(radius: 3)
-                            .overlay { Image(systemName: "chevron.left.chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(p.accent) }
-                            .position(x: geo.size.width * fraction, y: geo.size.height / 2)
-                    }
                 }
                 .scaleEffect(liveScale).offset(liveOffset)
 
-                // Fixed screen-space chrome (does not zoom).
-                pill("Original", bg: .black.opacity(0.5), align: .leading)
-                pill(caption.map { "Optimiert · \($0)" } ?? "Optimiert", bg: p.accent.opacity(0.9), align: .trailing)
-                zoomControls(geo: geo, liveScale: liveScale, zoomed: zoomed)
+                // Split line + handle, in screen space, always draggable.
+                Rectangle().fill(.white).frame(width: 2, height: geo.size.height)
+                    .position(x: dividerX, y: geo.size.height / 2).shadow(radius: 1)
+                Circle().fill(.white).frame(width: 34, height: 34).shadow(radius: 3)
+                    .overlay { Image(systemName: "chevron.left.chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(p.accent) }
+                    .position(x: dividerX, y: geo.size.height / 2)
+                    .highPriorityGesture(DragGesture()
+                        .onChanged { v in
+                            let start = fractionDragStart ?? fraction
+                            if fractionDragStart == nil { fractionDragStart = fraction }
+                            fraction = max(0, min(1, start + v.translation.width / (geo.size.width * liveScale)))
+                        }
+                        .onEnded { _ in fractionDragStart = nil })
+
+                pill("Original", bg: .black.opacity(0.5), align: .topLeading)
+                pill(caption.map { "Optimiert · \($0)" } ?? "Optimiert", bg: p.accent.opacity(0.9), align: .topTrailing)
+                zoomControls(liveScale: liveScale, zoomed: zoomed)
             }
             .contentShape(Rectangle())
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -59,8 +68,9 @@ struct BeforeAfterSlider: View {
                 .onChanged { v in if !zoomed { fraction = max(0, min(1, v.location.x / geo.size.width)) } }
                 .onEnded { v in if zoomed { offset = clampOffset(add(offset, v.translation), scale: scale, size: geo.size) } })
             .onTapGesture(count: 2) {
-                if zoomed { withAnimation(.easeOut(duration: 0.2)) { scale = 1; offset = .zero } }
-                else { withAnimation(.easeOut(duration: 0.2)) { scale = detailScale(geo: geo) } }
+                withAnimation(.easeOut(duration: 0.2)) {
+                    if zoomed { scale = 1; offset = .zero } else { scale = detailScale(geo: geo) }
+                }
             }
         }
     }
@@ -70,10 +80,10 @@ struct BeforeAfterSlider: View {
     @ViewBuilder private func pill(_ text: String, bg: Color, align: Alignment) -> some View {
         Text(text).font(.system(size: 11, weight: .semibold)).padding(.horizontal, 10).padding(.vertical, 4)
             .background(bg, in: Capsule()).foregroundStyle(.white).padding(14)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: align == .leading ? .topLeading : .topTrailing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: align)
     }
 
-    private func zoomControls(geo: GeometryProxy, liveScale: CGFloat, zoomed: Bool) -> some View {
+    private func zoomControls(liveScale: CGFloat, zoomed: Bool) -> some View {
         HStack(spacing: 2) {
             zoomButton("minus") { setScale(scale - 0.5) }
             Text(String(format: "%.1f×", liveScale)).font(.system(size: 11, weight: .medium).monospacedDigit())
@@ -112,7 +122,6 @@ struct BeforeAfterSlider: View {
         let mx = size.width * (scale - 1) / 2, my = size.height * (scale - 1) / 2
         return CGSize(width: min(max(o.width, -mx), mx), height: min(max(o.height, -my), my))
     }
-    // Double-click target: show the optimized image near 1:1 with its actual pixels, clamped.
     private func detailScale(geo: GeometryProxy) -> CGFloat {
         let px = CGFloat(after.representations.first?.pixelsWide ?? Int(after.size.width))
         guard geo.size.width > 0, px > 0 else { return 3 }

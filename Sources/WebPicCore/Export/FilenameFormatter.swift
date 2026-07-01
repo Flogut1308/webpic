@@ -10,11 +10,13 @@ public enum FilenameFormatter {
         }
     }
 
-    public static func expand(_ scheme: String, name: String, width: Int, format: ImageFormat) -> String {
+    public static func expand(_ scheme: String, name: String, width: Int, height: Int = 0,
+                              format: ImageFormat) -> String {
         let base = (name as NSString).deletingPathExtension
         return scheme
             .replacingOccurrences(of: "{name}", with: base)
             .replacingOccurrences(of: "{w}", with: "\(width)")
+            .replacingOccurrences(of: "{h}", with: "\(height)")
             .replacingOccurrences(of: "{format}", with: fileExtension(format))
     }
 }

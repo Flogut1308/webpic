@@ -7,6 +7,11 @@ final class FilenameFormatterTests: XCTestCase {
             FilenameFormatter.expand("{name}-{w}.{format}", name: "hero-banner", width: 1200, format: .webp),
             "hero-banner-1200.webp")
     }
+    func testExpandHeightToken() {
+        XCTAssertEqual(
+            FilenameFormatter.expand("{name}-{w}x{h}.{format}", name: "hero", width: 1200, height: 800, format: .webp),
+            "hero-1200x800.webp")
+    }
     func testStripsSourceExtension() {
         XCTAssertEqual(
             FilenameFormatter.expand("{name}.{format}", name: "photo.jpeg", width: 800, format: .avif),
