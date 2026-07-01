@@ -29,6 +29,8 @@ struct RootView: View {
         .overlay {
             if store.sheet == .code {
                 CodeSheet(store: store).environment(\.wpPalette, palette)
+            } else if store.sheet == .update {
+                UpdateSheet(store: store).environment(\.wpPalette, palette)
             }
         }
     }

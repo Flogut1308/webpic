@@ -95,7 +95,7 @@ struct SidebarView: View {
                 Button { store.sheet = .update } label: {
                     HStack(spacing: 8) {
                         Circle().fill(p.accent).frame(width: 7, height: 7)
-                        Text("Update 2.1 verfügbar")
+                        Text("Update \(store.availableUpdate?.version ?? "") verfügbar")
                             .font(.system(size: 12, weight: .medium)).foregroundStyle(p.accent)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold)).foregroundStyle(p.accent)

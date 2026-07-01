@@ -43,6 +43,18 @@ struct WebPicMain: App {
         } else {
             applyOverrides()
         }
+        if env["WEBPIC_UPDATE"] == "1" {
+            store.availableUpdate = ReleaseInfo(
+                version: "2.1",
+                notes: ["AVIF-Encoder um bis zu 3× schneller",
+                        "Neues Next.js-Snippet mit sizes",
+                        "Fehler beim Beibehalten von EXIF behoben"],
+                downloadURL: URL(string: "https://github.com/Flogut1308/webpic/releases/latest")!,
+                sizeBytes: 14_680_064)
+            store.showUpdate = true
+        } else {
+            Task { await store.checkForUpdate() }
+        }
         _store = State(initialValue: store)
         _theme = State(initialValue: theme)
     }
