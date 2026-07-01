@@ -1,11 +1,11 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-9-hardening.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 45, "subject": "M9 Task 0: source-data retention + unified encode-source", "status": "pending",
+    { "id": 0, "nativeTaskId": 45, "subject": "M9 Task 0: source-data retention + unified encode-source", "status": "completed",
       "description": "WebPicImage.sourceData + EncodeSource loader + Photos import processable.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/WebPicImage.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Sources/WebPicCore/Encoding/ImageProcessor.swift\", \"Tests/WebPicCoreTests/PhotosProcessTests.swift\"], \"verifyCommand\": \"swift test --filter PhotosProcessTests\", \"acceptanceCriteria\": [\"sourceData retained\", \"EncodeSource loader\", \"data import processes\"]}\n```" },
-    { "id": 1, "nativeTaskId": 46, "subject": "M9 Task 1: honor keepMetadata (EXIF/ICC)", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 46, "subject": "M9 Task 1: honor keepMetadata (EXIF/ICC)", "status": "completed", "blockedBy": [0],
       "description": "Encoder metadata param; ImageProcessor threads source EXIF/ICC when keepMetadata.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/ImageEncoder.swift\", \"Sources/WebPicCore/Encoding/ImageIOEncoder.swift\", \"Sources/WebPicCore/Encoding/WebPEncoder.swift\", \"Sources/WebPicCore/Encoding/ImageProcessor.swift\", \"Tests/WebPicCoreTests/MetadataTests.swift\"], \"verifyCommand\": \"swift test --filter MetadataTests\", \"acceptanceCriteria\": [\"metadata written/nil\", \"EXIF round-trips\", \"keepMetadata-gated\"]}\n```" },
-    { "id": 2, "nativeTaskId": 47, "subject": "M9 Task 2: version 2.1 + release", "status": "pending", "blockedBy": [1],
+    { "id": 2, "nativeTaskId": 47, "subject": "M9 Task 2: version 2.1 + release", "status": "completed", "blockedBy": [1],
       "description": "Bump version to 2.1; cut v2.1 release.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/WebPicCore.swift\", \"Tests/WebPicCoreTests/SmokeTests.swift\", \"Scripts/bundle.sh\"], \"verifyCommand\": \"swift test && bash Scripts/bundle.sh release && bash Scripts/make-dmg.sh\", \"acceptanceCriteria\": [\"version 2.1\", \"dmg builds\", \"v2.1 release\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T22:10:00Z"
