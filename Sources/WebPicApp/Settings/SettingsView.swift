@@ -25,6 +25,9 @@ struct SettingsView: View {
                         WPSectionLabel(text: "Format")
                         FormatChips(store: store)
                     }
+                    if let img = store.selected {
+                        CompressionCard(store: store, image: img)
+                    }
                 }
                 .frame(maxWidth: 680, alignment: .leading)
                 .padding(.horizontal, 28).padding(.vertical, 26)
