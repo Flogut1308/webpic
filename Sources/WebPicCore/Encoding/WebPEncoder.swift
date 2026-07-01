@@ -6,14 +6,16 @@ public struct WebPEncoder: ImageEncoder {
     public let format: ImageFormat = .webp
     public init() {}
 
-    // WebP: metadata embedding is not supported via libwebp; `metadata` is ignored.
     public func encode(_ image: CGImage, quality: Double, metadata: [CFString: Any]? = nil) throws -> Data {
         let width = image.width, height = image.height
         let bytesPerRow = width * 4
         var rgba = [UInt8](repeating: 0, count: bytesPerRow * height)
-        let cs = CGColorSpaceCreateDeviceRGB()
+        // When embedding ICC (keepMetadata), draw into the image's OWN colorspace so the
+        // pixels match the profile we attach; otherwise flatten to deviceRGB (assumed sRGB).
+        let embedICC = metadata != nil
+        let space = (embedICC ? image.colorSpace : nil) ?? CGColorSpaceCreateDeviceRGB()
         guard let ctx = CGContext(data: &rgba, width: width, height: height, bitsPerComponent: 8,
-                                  bytesPerRow: bytesPerRow, space: cs,
+                                  bytesPerRow: bytesPerRow, space: space,
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             throw EncodeError.encodeFailed
         }
@@ -26,6 +28,30 @@ public struct WebPEncoder: ImageEncoder {
         }
         guard size > 0, let out = output else { throw EncodeError.encodeFailed }
         defer { WebPFree(out) }
-        return Data(bytes: out, count: size)
+        let webp = Data(bytes: out, count: size)
+
+        guard embedICC, let icc = space.copyICCData() as Data? else { return webp }
+        return Self.embedICC(webp, icc: icc) ?? webp
+    }
+
+    /// Attach an ICCP chunk to an existing WebP via WebPMux.
+    private static func embedICC(_ webp: Data, icc: Data) -> Data? {
+        var input = WebPData()
+        var assembled = WebPData()
+        return webp.withUnsafeBytes { (wp: UnsafeRawBufferPointer) -> Data? in
+            input.bytes = wp.bindMemory(to: UInt8.self).baseAddress
+            input.size = webp.count
+            guard let mux = WebPMuxCreate(&input, 1) else { return nil }
+            defer { WebPMuxDelete(mux) }
+            return icc.withUnsafeBytes { (ib: UnsafeRawBufferPointer) -> Data? in
+                var iccChunk = WebPData()
+                iccChunk.bytes = ib.bindMemory(to: UInt8.self).baseAddress
+                iccChunk.size = icc.count
+                guard WebPMuxSetChunk(mux, "ICCP", &iccChunk, 1) == WEBP_MUX_OK,
+                      WebPMuxAssemble(mux, &assembled) == WEBP_MUX_OK else { return nil }
+                defer { WebPDataClear(&assembled) }
+                return Data(bytes: assembled.bytes, count: assembled.size)
+            }
+        }
     }
 }
