@@ -14,6 +14,10 @@ public final class AppStore {
     public var lazyLoading: Bool = true
     public var showUpdate: Bool = true
 
+    public private(set) var processing: Bool = false
+    public private(set) var results: [EncodeResult] = []
+    public private(set) var chosenQuality: Int? = nil
+
     public enum SheetKind: Sendable { case code, update }
     public enum SnippetFramework: String, CaseIterable, Sendable { case html, react, next, vue }
 
@@ -111,5 +115,35 @@ public final class AppStore {
         if let data = try? JSONEncoder().encode(settings) {
             defaults.set(data, forKey: Self.settingsKey)
         }
+    }
+
+    /// Run the real encoder on the selected (URL-backed) image; caches results.
+    @MainActor
+    public func processSelected() async {
+        guard let img = selected, let url = img.url else { results = []; chosenQuality = nil; return }
+        processing = true
+        let settings = self.settings
+        let output = await Task.detached(priority: .userInitiated) { () -> (results: [EncodeResult], chosen: Int?) in
+            let proc = ImageProcessor()
+            guard let cg = proc.loadCGImage(url: url) else { return ([], nil) }
+            if settings.compressionMode == .target {
+                if let t = try? proc.processForTarget(source: cg, settings: settings) {
+                    return (t.results, t.chosenQuality)
+                }
+                return ([], nil)
+            } else {
+                let r = (try? proc.process(source: cg, settings: settings)) ?? []
+                return (r, nil)
+            }
+        }.value
+        self.results = output.results
+        self.chosenQuality = output.chosen
+        self.processing = false
+    }
+
+    /// The primary optimized result (for Compare/Export display), if computed.
+    public var primaryResult: EncodeResult? {
+        let primary = EstimationService.primaryFormat(settings.formats)
+        return results.first { $0.format == primary } ?? results.first
     }
 }
