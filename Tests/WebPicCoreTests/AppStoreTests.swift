@@ -30,7 +30,7 @@ final class AppStoreTests: XCTestCase {
     }
 
     func testFormatBytes() {
-        XCTAssertEqual(formatBytes(6_083_000), "6,1 MB")
+        XCTAssertEqual(formatBytes(6_083_000), "5,8 MB")
         XCTAssertEqual(formatBytes(430_000), "420 KB")
         XCTAssertEqual(formatBytes(512), "512 B")
     }

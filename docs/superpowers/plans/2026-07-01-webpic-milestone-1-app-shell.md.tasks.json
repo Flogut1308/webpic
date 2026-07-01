@@ -5,14 +5,14 @@
       "id": 0,
       "nativeTaskId": 4,
       "subject": "Task 0: Swift Package scaffold + runnable .app",
-      "status": "pending",
+      "status": "completed",
       "description": "Swift package (WebPicCore lib + WebPicApp executable + tests, macOS 14), minimal core + smoke test, SwiftUI @main App, placeholder RootView, Scripts/bundle.sh producing dist/WebPic.app.\n\n```json:metadata\n{\"files\": [\"Package.swift\", \"Sources/WebPicCore/WebPicCore.swift\", \"Sources/WebPicApp/WebPicMain.swift\", \"Sources/WebPicApp/RootView.swift\", \"Scripts/bundle.sh\", \"Tests/WebPicCoreTests/SmokeTests.swift\"], \"verifyCommand\": \"swift build && swift test && bash Scripts/bundle.sh && open dist/WebPic.app\", \"acceptanceCriteria\": [\"swift build exits 0\", \"swift test exits 0\", \"bundle.sh writes dist/WebPic.app and it launches a titled window\"]}\n```"
     },
     {
       "id": 1,
       "nativeTaskId": 5,
       "subject": "Task 1: Color tokens (WPPalette + hex init + environment)",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [0],
       "description": "Color(hex:) init, WPPalette light/dark with exact reference hexes, wpPalette EnvironmentKey.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Theme/Color+Hex.swift\", \"Sources/WebPicCore/Theme/WPPalette.swift\", \"Sources/WebPicApp/Theme/WPPaletteEnvironment.swift\", \"Tests/WebPicCoreTests/ColorHexTests.swift\"], \"verifyCommand\": \"swift test --filter ColorHexTests\", \"acceptanceCriteria\": [\"Color(hex:) gives correct sRGB components\", \"WPPalette.light/.dark expose all tokens\", \"swift test passes\"]}\n```"
     },
@@ -20,7 +20,7 @@
       "id": 2,
       "nativeTaskId": 6,
       "subject": "Task 2: ThemeManager (system + manual override, persisted)",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [0],
       "description": "@Observable ThemeManager: default .system, manual light/dark override, UserDefaults persistence, preferredColorScheme mapping.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Theme/ThemeManager.swift\", \"Tests/WebPicCoreTests/ThemeManagerTests.swift\"], \"verifyCommand\": \"swift test --filter ThemeManagerTests\", \"acceptanceCriteria\": [\"default is .system\", \".dark persists and restores\", \"preferredColorScheme maps correctly\"]}\n```"
     },
@@ -28,7 +28,7 @@
       "id": 3,
       "nativeTaskId": 7,
       "subject": "Task 3: Domain models + Settings (Codable)",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [0],
       "description": "Enums, Preset table, Settings (Codable, .default), WebPicImage + ImageStatus.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/Enums.swift\", \"Sources/WebPicCore/Models/Preset.swift\", \"Sources/WebPicCore/Models/Settings.swift\", \"Sources/WebPicCore/Models/WebPicImage.swift\", \"Tests/WebPicCoreTests/SettingsTests.swift\"], \"verifyCommand\": \"swift test --filter SettingsTests\", \"acceptanceCriteria\": [\"Settings Codable round-trips\", \"Preset table correct\", \"Settings.default matches reference\"]}\n```"
     },
