@@ -45,10 +45,10 @@ struct WebPicMain: App {
         }
         if env["WEBPIC_UPDATE"] == "1" {
             store.availableUpdate = ReleaseInfo(
-                version: "2.1",
-                notes: ["AVIF-Encoder um bis zu 3× schneller",
-                        "Neues Next.js-Snippet mit sizes",
-                        "Fehler beim Beibehalten von EXIF behoben"],
+                version: "2.3",
+                notes: ["Pro-Bild-Einstellungen im Batch",
+                        "WebP mit ICC-Farbprofil",
+                        "Fotos-Import optimierbar"],
                 downloadURL: URL(string: "https://github.com/Flogut1308/webpic/releases/latest")!,
                 sizeBytes: 14_680_064)
             store.showUpdate = true
