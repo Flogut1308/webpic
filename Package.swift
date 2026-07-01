@@ -4,8 +4,16 @@ import PackageDescription
 let package = Package(
     name: "WebPic",
     platforms: [.macOS(.v14)],
+    dependencies: [
+        .package(url: "https://github.com/SDWebImage/libwebp-Xcode.git", from: "1.5.0"),
+    ],
     targets: [
-        .target(name: "WebPicCore"),
+        .target(
+            name: "WebPicCore",
+            dependencies: [
+                .product(name: "libwebp", package: "libwebp-Xcode"),
+            ]
+        ),
         .executableTarget(
             name: "WebPicApp",
             dependencies: ["WebPicCore"]
