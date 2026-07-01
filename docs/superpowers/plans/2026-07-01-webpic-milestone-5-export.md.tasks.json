@@ -1,0 +1,18 @@
+{
+  "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-5-export.md",
+  "tasks": [
+    { "id": 0, "nativeTaskId": 29, "subject": "M5 Task 0: Orientation-correct loading", "status": "pending",
+      "description": "Apply EXIF orientation on load (CoreImage).\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/ImageResizer.swift\", \"Sources/WebPicCore/Encoding/ImageProcessor.swift\", \"Tests/WebPicCoreTests/OrientationTests.swift\"], \"verifyCommand\": \"swift test --filter OrientationTests\", \"acceptanceCriteria\": [\"orientation 6 -> 200x400\", \"orientation 1 unchanged\"]}\n```" },
+    { "id": 1, "nativeTaskId": 30, "subject": "M5 Task 1: FilenameFormatter", "status": "pending",
+      "description": "Scheme expansion {name}/{w}/{format}.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Export/FilenameFormatter.swift\", \"Tests/WebPicCoreTests/FilenameFormatterTests.swift\"], \"verifyCommand\": \"swift test --filter FilenameFormatterTests\", \"acceptanceCriteria\": [\"expand scheme\", \"strip ext\", \"extensions\"]}\n```" },
+    { "id": 2, "nativeTaskId": 31, "subject": "M5 Task 2: processSelected + ExportService.write", "status": "pending", "blockedBy": [0, 1],
+      "description": "AppStore.processSelected (off-main) + ExportService.write.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Export/ExportService.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Tests/WebPicCoreTests/ExportServiceTests.swift\", \"Tests/WebPicCoreTests/AppStoreProcessTests.swift\"], \"verifyCommand\": \"swift test --filter ExportServiceTests && swift test --filter AppStoreProcessTests\", \"acceptanceCriteria\": [\"write by scheme\", \"processSelected populates\", \"processing toggles\"]}\n```" },
+    { "id": 3, "nativeTaskId": 32, "subject": "M5 Task 3: Compare screen", "status": "pending", "blockedBy": [2],
+      "description": "Before/after slider + 3 metric cards from real results.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Compare/CompareView.swift\", \"Sources/WebPicApp/Compare/BeforeAfterSlider.swift\", \"Sources/WebPicApp/MainView.swift\", \"Sources/WebPicCore/Models/Settings.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"slider\", \"3 metrics real\", \"processes on entry\"]}\n```" },
+    { "id": 4, "nativeTaskId": 33, "subject": "M5 Task 4: Export screen + save/share", "status": "pending", "blockedBy": [2],
+      "description": "Summary + auto-quality note + save/share; inline format order (not ImageProcessor.order).\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Export/ExportView.swift\", \"Sources/WebPicApp/Export/ExportActions.swift\", \"Sources/WebPicApp/MainView.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"summary rows\", \"auto-quality note\", \"save states + share\"]}\n```" },
+    { "id": 5, "nativeTaskId": 34, "subject": "M5 Task 5: WEBPIC_TAB hook + screenshot", "status": "pending", "blockedBy": [3, 4],
+      "description": "Launch hook to open a tab; verify Compare/Export screenshots.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/WebPicMain.swift\"], \"verifyCommand\": \"swift build && swift test\", \"acceptanceCriteria\": [\"WEBPIC_TAB opens tab\", \"screenshots real\", \"build+test green\"]}\n```" }
+  ],
+  "lastUpdated": "2026-07-01T20:30:00Z"
+}
