@@ -6,7 +6,9 @@ public final class AppStore {
     public var images: [WebPicImage] = []
     public var selectedID: String?
     public var tab: Tab = .settings
-    public var settings: Settings
+    public var settings: Settings {
+        didSet { persistSettings() }
+    }
     public var sheet: SheetKind? = nil
     public var framework: SnippetFramework = .html
     public var lazyLoading: Bool = true
