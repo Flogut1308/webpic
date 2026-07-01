@@ -704,3 +704,10 @@ Controller then screenshots Compare + Export (light + dark) with a real imported
 - Photos-origin images (url nil) currently can't be re-encoded at full res (only thumbnail) — retain original data or disable processing for them; revisit.
 - "In Fotos speichern" currently writes to a chosen folder; true Photos-library save via the Photos framework can be added (needs the usage description already in the bundle).
 - EXIF/ICC copy-through on export still pending (orientation is baked; other metadata is dropped).
+
+### Carry-forward from M5 code review
+- **M6: `keepMetadata` is shown in the Export summary but not honored** — encoders drop all metadata. Either wire EXIF/ICC copy-through or caveat the label.
+- **M6: Photos-origin images (url == nil) can't be processed** — `processSelected` returns empty results → Compare shows "Keine Vorschau". Wire `WebPicImage` to carry source `Data` (or re-load) so data imports encode at full res.
+- **M6/M7: `Settings.hashValueString` omits `breakpoints`/`customBreakpoint`** — fine now (single-width encode), but responsive processing must add them or Compare/Export won't re-process on breakpoint change.
+- **M7: big-image memory** — `beforeImage` full-res `NSImage(contentsOf:)` (main-thread, per view update) + retained `EncodeResult.data` blobs for every format coexist; use a downsampled preview and stream export for batches.
+- **Minor:** cache a `static let CIContext` in `ImageResizer.applyOrientation`; `ExportActions.share` could fall back from `NSApp.keyWindow` to `mainWindow`.
