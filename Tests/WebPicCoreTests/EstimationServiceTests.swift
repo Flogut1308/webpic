@@ -60,4 +60,35 @@ final class EstimationServiceTests: XCTestCase {
         XCTAssertGreaterThan(pct, 0)
         XCTAssertLessThanOrEqual(pct, 100)
     }
+
+    func testCustomTargetWidth() {
+        var s = Settings.default
+        s.preset = .custom
+        XCTAssertEqual(s.targetWidth, 1600, "custom falls back to its default width when unset")
+        s.customWidth = 960
+        XCTAssertEqual(s.targetWidth, 960)
+        // A custom width only applies to the custom preset.
+        s.preset = .hero
+        XCTAssertEqual(s.targetWidth, 1920)
+    }
+
+    func testCustomWidthDrivesEstimateAndDimensions() {
+        var s = Settings.default
+        s.preset = .custom
+        s.customWidth = 800
+        XCTAssertEqual(EstimationService.newDimensions(image: hero(), settings: s).width, 800)
+    }
+
+    func testPerFormatEstimateOrdersByFormatFactor() {
+        var s = Settings.default
+        s.quality = 78
+        let avif = EstimationService.estimatedBytes(image: hero(), settings: s, format: .avif)
+        let webp = EstimationService.estimatedBytes(image: hero(), settings: s, format: .webp)
+        let jpeg = EstimationService.estimatedBytes(image: hero(), settings: s, format: .jpeg)
+        XCTAssertLessThan(avif, webp)
+        XCTAssertLessThan(webp, jpeg)
+        // For the primary format in quality mode, the per-format value matches the overall estimate.
+        XCTAssertEqual(EstimationService.estimatedBytes(image: hero(), settings: s, format: .webp),
+                       EstimationService.estimatedBytes(image: hero(), settings: s))
+    }
 }

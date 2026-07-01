@@ -31,11 +31,16 @@ struct MainView: View {
     private var toolbarContent: some ToolbarContent {
         if !store.isEmpty {
             ToolbarItem(placement: .navigation) {
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(store.tab == .batch ? "Alle Bilder" : (store.selected?.name ?? "WebPic"))
                         .font(.system(size: 13, weight: .semibold))
-                    Text(subtitle).font(.system(size: 11).monospacedDigit()).foregroundStyle(p.t3)
+                        .lineLimit(1).truncationMode(.middle)
+                    Text(subtitle).font(.system(size: 11).monospacedDigit())
+                        .foregroundStyle(p.t3).lineLimit(1)
                 }
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: 260, alignment: .leading)
+                .padding(.leading, 4)
             }
             if store.tab != .batch {
                 ToolbarItem(placement: .principal) {
@@ -50,8 +55,9 @@ struct MainView: View {
                 ToolbarItemGroup(placement: .primaryAction) {
                     Button { store.sheet = .code } label: { Image(systemName: "chevron.left.forwardslash.chevron.right") }
                     Button { store.tab = .export } label: {
-                        Label("Exportieren", systemImage: "square.and.arrow.up")
+                        Label("Export", systemImage: "square.and.arrow.up")
                     }
+                    .labelStyle(.titleAndIcon)
                     .buttonStyle(.borderedProminent).tint(p.accent)
                 }
             }

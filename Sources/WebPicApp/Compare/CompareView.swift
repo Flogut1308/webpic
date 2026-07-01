@@ -21,7 +21,8 @@ struct CompareView: View {
             if store.processing {
                 ProgressView("Optimiere …").frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let img = image, let before = beforeImage, let after = afterImage, let r = result {
-                BeforeAfterSlider(before: before, after: after)
+                BeforeAfterSlider(before: before, after: after,
+                                  caption: "\(r.format.displayName) · Q\(r.quality)")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 HStack(spacing: 14) {
                     metric("Größenersparnis", "−\(savings(img, r))%", sub: "\(formatBytes(img.byteSize)) → \(formatBytes(r.byteSize))")

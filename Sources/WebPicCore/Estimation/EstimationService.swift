@@ -19,7 +19,7 @@ public enum EstimationService {
     }
 
     public static func presetWidth(_ settings: Settings) -> Int {
-        Preset.width(for: settings.preset)
+        settings.targetWidth
     }
 
     static func targetWidth(image: WebPicImage, settings: Settings) -> Int {
@@ -71,6 +71,21 @@ public enum EstimationService {
         let b = Double(image.byteSize)
             * areaFactor(image: image, settings: settings)
             * formatFactor(primaryFormat(settings.formats))
+            * q
+        return max(8000, Int(b.rounded()))
+    }
+
+    /// Estimated output size for a specific format (for the multi-format preview breakdown).
+    /// In target mode every format is estimated at the auto-solved quality, so only the primary
+    /// lands near the requested target — the others show their honest relative size.
+    public static func estimatedBytes(image: WebPicImage, settings: Settings, format: ImageFormat) -> Int {
+        let qPercent = settings.compressionMode == .target
+            ? Double(autoQuality(image: image, settings: settings))
+            : Double(settings.quality)
+        let q = 0.14 + qPercent / 100 * 0.86
+        let b = Double(image.byteSize)
+            * areaFactor(image: image, settings: settings)
+            * formatFactor(format)
             * q
         return max(8000, Int(b.rounded()))
     }

@@ -9,12 +9,17 @@ struct PreviewColumn: View {
     private var estBytes: Int { EstimationService.estimatedBytes(image: image, settings: store.activeSettings) }
     private var savings: Int { EstimationService.savingsPercent(image: image, settings: store.activeSettings) }
     private var newDims: (width: Int, height: Int) { EstimationService.newDimensions(image: image, settings: store.activeSettings) }
-    private var primary: ImageFormat { EstimationService.primaryFormat(store.activeSettings.formats) }
+
+    // Selected formats in display order, each with its own estimate (multi-format breakdown).
+    private let formatOrder: [ImageFormat] = [.avif, .webp, .jpeg, .png]
+    private var selectedFormats: [ImageFormat] {
+        formatOrder.filter { store.activeSettings.formats.contains($0) }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             ThumbnailView(image: image, cornerRadius: 0)
-                .frame(height: 180).frame(maxWidth: .infinity).clipped()
+                .frame(maxWidth: .infinity).frame(height: 210).clipped()
                 .overlay(alignment: .topLeading) {
                     Text("VORSCHAU").font(.system(size: 10, weight: .semibold))
                         .padding(.horizontal, 7).padding(.vertical, 3)
@@ -51,12 +56,37 @@ struct PreviewColumn: View {
                 .padding(.bottom, 14)
                 Divider()
                 row("Auflösung", "\(image.pixelWidth)×\(image.pixelHeight) → \(newDims.width)×\(newDims.height)", mono: true)
-                row("Format", primary.displayName, mono: false)
+                formatBreakdown
             }
             .padding(.horizontal, 15).padding(.top, 14).padding(.bottom, 16)
         }
         .wpCard(p)
-        .frame(width: 300)
+        .frame(minWidth: 300, idealWidth: 360, maxWidth: 460)
+    }
+
+    // Per-format estimated sizes, so choosing several formats shows what each will weigh.
+    @ViewBuilder private var formatBreakdown: some View {
+        if selectedFormats.isEmpty {
+            row("Format", "—", mono: false)
+        } else if selectedFormats.count == 1 {
+            row("Format", selectedFormats[0].displayName, mono: false)
+        } else {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Formate").font(.system(size: 12)).foregroundStyle(p.t2)
+                    Spacer()
+                }.padding(.top, 8)
+                ForEach(selectedFormats, id: \.self) { fmt in
+                    HStack {
+                        Text(fmt.displayName).font(.system(size: 12, weight: .medium)).foregroundStyle(p.t1)
+                        Spacer()
+                        Text(formatBytes(EstimationService.estimatedBytes(image: image, settings: store.activeSettings, format: fmt)))
+                            .font(.system(size: 12).monospacedDigit()).foregroundStyle(p.t2)
+                    }
+                    .padding(.vertical, 3)
+                }
+            }
+        }
     }
 
     @ViewBuilder private func row(_ label: String, _ value: String, mono: Bool) -> some View {

@@ -62,7 +62,7 @@ public struct ImageProcessor: Sendable {
     /// Resize + color-convert once, then encode each selected format at `settings.quality`.
     /// `sourceMetadata` (from `sourceMetadata(_:)`) is embedded only when `settings.keepMetadata` is true.
     public func process(source: CGImage, settings: Settings, sourceMetadata: [CFString: Any]? = nil) throws -> [EncodeResult] {
-        let targetW = min(Preset.width(for: settings.preset), source.width)
+        let targetW = min(settings.targetWidth, source.width)
         let resized = ImageResizer.resize(source, toWidth: targetW)
         let converted = ImageResizer.convert(resized, to: settings.colorSpace)
         let q = Double(settings.quality) / 100.0
@@ -82,7 +82,7 @@ public struct ImageProcessor: Sendable {
     /// `sourceMetadata` is embedded on ALL formats when `settings.keepMetadata`; the solver's
     /// already-encoded primary bytes are reused only when there's no metadata to embed.
     public func processForTarget(source: CGImage, settings: Settings, sourceMetadata: [CFString: Any]? = nil) throws -> TargetOutput {
-        let targetW = min(Preset.width(for: settings.preset), source.width)
+        let targetW = min(settings.targetWidth, source.width)
         let resized = ImageResizer.resize(source, toWidth: targetW)
         let converted = ImageResizer.convert(resized, to: settings.colorSpace)
         // Guard the Double first: Int(Double.nan) / Int(±inf) trap. Non-numeric or

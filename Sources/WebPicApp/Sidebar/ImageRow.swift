@@ -11,7 +11,7 @@ struct ImageRow: View {
 
     var body: some View {
         Button(action: onSelect) {
-            HStack(spacing: 10) {
+            HStack(spacing: 13) {
                 ThumbnailView(image: image)
                     .frame(width: 34, height: 34)
                     .overlay {

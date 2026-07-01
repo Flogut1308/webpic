@@ -31,10 +31,12 @@ struct ExportView: View {
     }
 
     private var header: some View {
-        HStack(spacing: 18) {
-            if let img = store.selected { ThumbnailView(image: img).frame(width: 112, height: 112) }
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Bereit zum Export").font(.system(size: 22, weight: .bold))
+        HStack(spacing: 20) {
+            if let img = store.selected {
+                ThumbnailView(image: img).frame(width: 96, height: 96)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Bereit zum Export").font(.system(size: 22, weight: .bold)).lineLimit(1)
                 if let img = store.selected, let r = store.primaryResult {
                     let pct = img.byteSize > 0 ? max(0, Int((1 - Double(r.byteSize)/Double(img.byteSize))*100)) : 0
                     Text("\(formatBytes(r.byteSize)) · −\(pct)% kleiner · \(r.width)×\(r.height)")
@@ -94,30 +96,34 @@ struct ExportView: View {
     private var actions: some View {
         HStack(spacing: 10) {
             Button { save() } label: {
-                HStack(spacing: 8) {
+                HStack(spacing: 7) {
                     if saveState == .busy { ProgressView().controlSize(.small).tint(.white) }
                     else if saveState == .done { Image(systemName: "checkmark") }
+                    else { Image(systemName: "square.and.arrow.down") }
                     Text(saveLabel)
-                }.frame(height: 42).padding(.horizontal, 22)
+                }.frame(height: 32).padding(.horizontal, 16)
             }
             .buttonStyle(.borderedProminent).tint(saveState == .done ? p.statusDone : p.accent)
             .disabled(saveState != .idle || store.results.isEmpty)
 
             Button { ExportActions.share(store.results) } label: {
-                Label("Teilen", systemImage: "square.and.arrow.up").frame(height: 42).padding(.horizontal, 16)
+                Label("Teilen", systemImage: "square.and.arrow.up").frame(height: 32).padding(.horizontal, 12)
             }.buttonStyle(.bordered).disabled(store.results.isEmpty)
 
             Button { store.sheet = .code } label: {
-                Label("Code-Snippet", systemImage: "chevron.left.forwardslash.chevron.right").frame(height: 42).padding(.horizontal, 16)
+                Label("Code-Snippet", systemImage: "chevron.left.forwardslash.chevron.right").frame(height: 32).padding(.horizontal, 10)
             }.buttonStyle(.borderless).tint(p.accent)
         }
+        .font(.system(size: 13, weight: .medium))
     }
 
+    // The primary action writes the encoded files to a folder the user picks — it exports,
+    // it does not save into the Photos library, so the label must say so.
     private var saveLabel: String {
         switch saveState {
-        case .idle: return "In Fotos speichern"
-        case .busy: return "Speichere …"
-        case .done: return "Gespeichert"
+        case .idle: return "Exportieren"
+        case .busy: return "Exportiere …"
+        case .done: return "Exportiert"
         }
     }
 
