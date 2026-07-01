@@ -685,3 +685,10 @@ git commit -m "feat: WEBPIC_IMPORT launch hook for screenshot verification (M2 t
 - Imported images carry `status == .waiting` (not yet optimized). Real optimization + progress = M4/M7.
 - `importFiles` loads sequentially (off-main per file). Concurrent batch processing with a `TaskGroup` and real progress = M7.
 - Photos import writes no temp files (imports from Data); real EXIF/ICC handling = M4.
+
+### Carry-forward from M2 code review (address in the noted milestone)
+- **M7:** `ThumbnailView` decodes the PNG via `NSImage(data:)` in `body` on the main thread per row/redraw — no cache. Fine for short lists; cache a resolved image (keyed by `id`) before the batch grid to avoid scroll jank.
+- **M7:** `importData` (Photos) sets `url = nil` and never dedupes, and names are positional (`photo-N.jpg`) → repeated imports create duplicates with colliding names. Dedupe by content hash / derive names from the `PhotosPickerItem`.
+- **M4:** import errors are swallowed with `try?` → bad files silently produce no row. Surface via the existing `ImageStatus.error(String)` row rendering.
+- **M7:** `importFiles` decodes sequentially and dedupes O(n²) — switch to a `TaskGroup` + `Set<URL>` snapshot when batch counts grow.
+- **Housekeeping:** consider enabling `.enableUpcomingFeature("StrictConcurrency")` now (Swift 6 readiness) while the closures capturing `AppStore` are still few — currently safe (main-actor-isolated) but would warn under strict concurrency.
