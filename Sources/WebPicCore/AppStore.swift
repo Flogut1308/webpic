@@ -121,6 +121,7 @@ public final class AppStore {
     @MainActor
     public func processSelected() async {
         guard let img = selected, let url = img.url else { results = []; chosenQuality = nil; return }
+        let targetID = img.id                 // guard against fast image switches
         processing = true
         let settings = self.settings
         let output = await Task.detached(priority: .userInitiated) { () -> (results: [EncodeResult], chosen: Int?) in
@@ -136,6 +137,9 @@ public final class AppStore {
                 return (r, nil)
             }
         }.value
+        // The selection may have changed while we were encoding — don't clobber the
+        // current image's results with a stale run. The current selection's own task owns `processing`.
+        guard selected?.id == targetID else { return }
         self.results = output.results
         self.chosenQuality = output.chosen
         self.processing = false

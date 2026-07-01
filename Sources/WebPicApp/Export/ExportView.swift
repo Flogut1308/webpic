@@ -128,10 +128,16 @@ struct ExportView: View {
         let name = store.selected?.name ?? "image"
         let scheme = store.settings.filenameScheme
         Task {
-            _ = try? ExportService.write(results: results, to: dir, originalName: name, scheme: scheme)
-            saveState = .done
-            try? await Task.sleep(nanoseconds: 1_600_000_000)
-            saveState = .idle
+            // Write off the main actor; only claim success if it actually succeeded.
+            let ok = await Task.detached { () -> Bool in
+                do { _ = try ExportService.write(results: results, to: dir, originalName: name, scheme: scheme); return true }
+                catch { return false }
+            }.value
+            saveState = ok ? .done : .idle
+            if ok {
+                try? await Task.sleep(nanoseconds: 1_600_000_000)
+                saveState = .idle
+            }
         }
     }
 
