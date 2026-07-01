@@ -1,17 +1,17 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-10-polish.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 48, "subject": "M10 Task 0: update throttle + skip", "status": "pending",
+    { "id": 0, "nativeTaskId": 48, "subject": "M10 Task 0: update throttle + skip", "status": "completed",
       "description": "24h throttle + skip-version on dismiss.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/AppStore.swift\", \"Sources/WebPicApp/Update/UpdateSheet.swift\", \"Tests/WebPicCoreTests/UpdateThrottleTests.swift\"], \"verifyCommand\": \"swift test --filter UpdateThrottleTests\", \"acceptanceCriteria\": [\"24h throttle\", \"skip not shown\", \"dismiss skips\"]}\n```" },
-    { "id": 1, "nativeTaskId": 49, "subject": "M10 Task 1: thumbnail cache + label", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 49, "subject": "M10 Task 1: thumbnail cache + label", "status": "completed", "blockedBy": [0],
       "description": "Cache decoded thumbnails; honest install label.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Shared/ThumbnailCache.swift\", \"Sources/WebPicApp/Shared/ThumbnailView.swift\", \"Sources/WebPicApp/Update/UpdateSheet.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"cache by id\", \"view uses cache\", \"label\"]}\n```" },
-    { "id": 2, "nativeTaskId": 50, "subject": "M10 Task 2: WebP ICC (WebPMux)", "status": "pending", "blockedBy": [1],
+    { "id": 2, "nativeTaskId": 50, "subject": "M10 Task 2: WebP ICC (WebPMux)", "status": "completed", "blockedBy": [1],
       "description": "Embed ICC in WebP via WebPMux when keepMetadata.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/WebPEncoder.swift\", \"Tests/WebPicCoreTests/WebPICCTests.swift\"], \"verifyCommand\": \"swift test --filter WebPICCTests\", \"acceptanceCriteria\": [\"ICCP when metadata\", \"none when nil\", \"decodes\"]}\n```" },
-    { "id": 3, "nativeTaskId": 51, "subject": "M10 Task 3: downsampled Compare preview", "status": "pending", "blockedBy": [2],
+    { "id": 3, "nativeTaskId": 51, "subject": "M10 Task 3: downsampled Compare preview", "status": "completed", "blockedBy": [2],
       "description": "Downsampled cached before image in Compare.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Compare/CompareView.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"downsampled cached before\", \"visuals intact\"]}\n```" },
-    { "id": 4, "nativeTaskId": 52, "subject": "M10 Task 4: per-image batch settings", "status": "pending", "blockedBy": [3],
+    { "id": 4, "nativeTaskId": 52, "subject": "M10 Task 4: per-image batch settings", "status": "completed", "blockedBy": [3],
       "description": "settingsOverride + activeSettings routing + rebind settings views.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/WebPicImage.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Sources/WebPicApp/Settings/SettingsView.swift\", \"Sources/WebPicApp/Settings/PresetCards.swift\", \"Sources/WebPicApp/Settings/FormatChips.swift\", \"Sources/WebPicApp/Settings/CompressionCard.swift\", \"Sources/WebPicApp/Settings/BreakpointsCard.swift\", \"Sources/WebPicApp/Settings/AdvancedCard.swift\", \"Sources/WebPicApp/Settings/PreviewColumn.swift\", \"Tests/WebPicCoreTests/PerImageSettingsTests.swift\"], \"verifyCommand\": \"swift test --filter PerImageSettingsTests && swift build\", \"acceptanceCriteria\": [\"settingsOverride\", \"activeSettings routing\", \"processing effective\", \"per-image isolation\"]}\n```" },
-    { "id": 5, "nativeTaskId": 53, "subject": "M10 Task 5: version 2.2 + release", "status": "pending", "blockedBy": [4],
+    { "id": 5, "nativeTaskId": 53, "subject": "M10 Task 5: version 2.2 + release", "status": "completed", "blockedBy": [4],
       "description": "Bump to 2.2; cut v2.2 release.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/WebPicCore.swift\", \"Tests/WebPicCoreTests/SmokeTests.swift\", \"Scripts/bundle.sh\", \"Sources/WebPicApp/WebPicMain.swift\"], \"verifyCommand\": \"swift test && bash Scripts/bundle.sh release && bash Scripts/make-dmg.sh\", \"acceptanceCriteria\": [\"version 2.2\", \"dmg builds\", \"v2.2 release\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T22:40:00Z"
