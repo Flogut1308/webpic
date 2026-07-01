@@ -23,6 +23,12 @@ struct WebPicMain: App {
             let urls = paths.split(separator: ":").map { URL(fileURLWithPath: String($0)) }
             Task { await store.importFiles(urls) }
         }
+        switch env["WEBPIC_TAB"] {
+        case "compare": store.tab = .compare
+        case "export":  store.tab = .export
+        case "batch":   store.tab = .batch
+        default:        break
+        }
         _store = State(initialValue: store)
         _theme = State(initialValue: theme)
     }
