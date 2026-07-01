@@ -1,15 +1,15 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-4-encoder.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 24, "subject": "M4 Task 0: EncodeResult + ImageEncoder + ImageIOEncoder", "status": "pending",
+    { "id": 0, "nativeTaskId": 24, "subject": "M4 Task 0: EncodeResult + ImageEncoder + ImageIOEncoder", "status": "completed",
       "description": "Encoder protocol + ImageIOEncoder (AVIF/JPEG/PNG via CGImageDestination).\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/EncodeResult.swift\", \"Sources/WebPicCore/Encoding/ImageEncoder.swift\", \"Sources/WebPicCore/Encoding/ImageIOEncoder.swift\", \"Tests/WebPicCoreTests/ImageIOEncoderTests.swift\"], \"verifyCommand\": \"swift test --filter ImageIOEncoderTests\", \"acceptanceCriteria\": [\"encodes jpeg/png/avif\", \"decodes right dims/UTI\", \"jpeg quality affects size\"]}\n```" },
-    { "id": 1, "nativeTaskId": 25, "subject": "M4 Task 1: WebPEncoder (libwebp)", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 25, "subject": "M4 Task 1: WebPEncoder (libwebp)", "status": "completed", "blockedBy": [0],
       "description": "WebP encode via libwebp WebPEncodeRGBA.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/WebPEncoder.swift\", \"Tests/WebPicCoreTests/WebPEncoderTests.swift\"], \"verifyCommand\": \"swift test --filter WebPEncoderTests\", \"acceptanceCriteria\": [\"RIFF/WEBP header\", \"decodes dims\", \"quality affects size\"]}\n```" },
-    { "id": 2, "nativeTaskId": 26, "subject": "M4 Task 2: ImageResizer", "status": "pending", "blockedBy": [0],
+    { "id": 2, "nativeTaskId": 26, "subject": "M4 Task 2: ImageResizer", "status": "completed", "blockedBy": [0],
       "description": "Downscale (preserve aspect, no upscale) + color-space convert.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/ImageResizer.swift\", \"Tests/WebPicCoreTests/ImageResizerTests.swift\"], \"verifyCommand\": \"swift test --filter ImageResizerTests\", \"acceptanceCriteria\": [\"downscale aspect\", \"no upscale\", \"sRGB/P3 convert\"]}\n```" },
-    { "id": 3, "nativeTaskId": 27, "subject": "M4 Task 3: ImageProcessor", "status": "pending", "blockedBy": [1, 2],
+    { "id": 3, "nativeTaskId": 27, "subject": "M4 Task 3: ImageProcessor", "status": "completed", "blockedBy": [1, 2],
       "description": "decode → resize → color-convert → encode selected formats → [EncodeResult].\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/ImageProcessor.swift\", \"Tests/WebPicCoreTests/ImageProcessorTests.swift\"], \"verifyCommand\": \"swift test --filter ImageProcessorTests\", \"acceptanceCriteria\": [\"load full-res\", \"resize+encode dims/formats\", \"smaller than source\", \"priority order\"]}\n```" },
-    { "id": 4, "nativeTaskId": 28, "subject": "M4 Task 4: TargetSizeSolver + target-mode", "status": "pending", "blockedBy": [3],
+    { "id": 4, "nativeTaskId": 28, "subject": "M4 Task 4: TargetSizeSolver + target-mode", "status": "completed", "blockedBy": [3],
       "description": "Binary search quality to byte budget; processForTarget encodes all formats at solved quality.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Encoding/TargetSizeSolver.swift\", \"Sources/WebPicCore/Encoding/ImageProcessor.swift\", \"Tests/WebPicCoreTests/TargetSizeSolverTests.swift\"], \"verifyCommand\": \"swift test --filter TargetSizeSolverTests\", \"acceptanceCriteria\": [\"converges under target 5..100\", \"processForTarget + chosenQuality\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T20:00:00Z"

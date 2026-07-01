@@ -588,3 +588,11 @@ git commit -m "feat: TargetSizeSolver binary search + target-mode processing (M4
 - **M6** applies the filename scheme + responsive `srcset` widths to real outputs.
 - WebP alpha uses premultiplied RGBA (fine for typical images); revisit straight-alpha if edge artifacts appear.
 - Metadata (EXIF/ICC) preservation is currently limited to color-space conversion; full EXIF copy-through can be added when the Save flow lands (M5/M6).
+
+### Carry-forward from M4 code review
+- **M5 (blocking entry): EXIF orientation.** `CGImageSourceCreateImageAtIndex` does NOT auto-apply orientation, and encode writes no `kCGImagePropertyOrientation` → images shot in a rotated orientation (typical iPhone photos) will export **sideways**. M5 must read the source orientation and bake the rotation into the CGImage (or write the orientation tag). Most likely visible bug — make it an explicit M5 task.
+- **M5: bound batch concurrency.** `WebPEncoder` allocates a `width*height*4` RGBA buffer (~48 MB for a 4032×3024 photo) that coexists with the source and libwebp output. A `TaskGroup` fanning one task per file multiplies this — cap parallelism (e.g. `min(ProcessInfo.processInfo.activeProcessorCount, 4)`).
+- **M5: original bytes / "copy if already smaller".** The pipeline always re-encodes from the decoded CGImage; there's no passthrough of original file bytes, and Photos-origin images retain none. Decide whether to keep originals.
+- **M6/Swift-6 concurrency:** `CGImage` is not `Sendable`. When strict concurrency is enabled, passing `CGImage` into the (Sendable) encoders from a TaskGroup will warn — wrap via `@unchecked Sendable`/`nonisolated(unsafe)` at that point.
+- **Alpha:** encoders/resizer draw into premultiplied-RGBA contexts; for transparent PNGs this is slightly lossy and technically wrong for `WebPEncodeRGBA` (wants un-premultiplied). Revisit if transparent assets matter.
+- **Perf:** target search does up to 8 encodes on the primary + 1 per non-primary; AVIF encode is slow — consider fewer iterations for AVIF or caching.
