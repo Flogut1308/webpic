@@ -19,6 +19,10 @@ struct WebPicMain: App {
         case "dark":  theme.appearance = .dark
         default:      break
         }
+        if let paths = env["WEBPIC_IMPORT"], !paths.isEmpty {
+            let urls = paths.split(separator: ":").map { URL(fileURLWithPath: String($0)) }
+            Task { await store.importFiles(urls) }
+        }
         _store = State(initialValue: store)
         _theme = State(initialValue: theme)
     }
