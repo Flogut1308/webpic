@@ -43,10 +43,14 @@ public struct ImageProcessor: Sendable {
         let targetW = min(Preset.width(for: settings.preset), source.width)
         let resized = ImageResizer.resize(source, toWidth: targetW)
         let converted = ImageResizer.convert(resized, to: settings.colorSpace)
-        let targetBytes = Int(EstimationService.targetBytes(settings))
+        // Guard the Double first: Int(Double.nan) / Int(±inf) trap. Non-numeric or
+        // out-of-range target (e.g. cleared field) falls back to a 1-byte floor,
+        // so the solver returns the smallest feasible result instead of crashing.
+        let tb = EstimationService.targetBytes(settings)
+        let targetBytes = (tb.isFinite && tb >= 1) ? Int(tb) : 1
         let primary = EstimationService.primaryFormat(settings.formats)
         let solution = try TargetSizeSolver.solve(image: converted, encoder: encoder(for: primary),
-                                                  targetBytes: max(1, targetBytes))
+                                                  targetBytes: targetBytes)
         let q = Double(solution.quality) / 100.0
         let selected = Self.order.filter { settings.formats.contains($0) }
         let results = try selected.map { fmt -> EncodeResult in

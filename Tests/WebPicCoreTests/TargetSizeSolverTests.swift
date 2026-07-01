@@ -36,4 +36,15 @@ final class TargetSizeSolverTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(out.chosenQuality, 5)
         XCTAssertLessThanOrEqual(out.chosenQuality, 100)
     }
+
+    func testProcessForTargetHandlesNonNumericTarget() throws {
+        // A cleared/invalid target field → targetBytes is NaN. Must not crash (Int(NaN) traps).
+        let img = ImageIOEncoderTests.noisyImage(400, 300)
+        var s = Settings.default
+        s.compressionMode = .target
+        s.targetValue = ""            // NaN
+        s.formats = [.jpeg]
+        let out = try ImageProcessor().processForTarget(source: img, settings: s)
+        XCTAssertEqual(out.results.count, 1)
+    }
 }
