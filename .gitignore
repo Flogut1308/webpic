@@ -1,0 +1,21 @@
+# Swift / SPM
+.build/
+.swiftpm/
+Package.resolved.bak
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# Build artifacts
+dist/
+*.app
+*.dmg
+*.zip
+
+# macOS
+.DS_Store
