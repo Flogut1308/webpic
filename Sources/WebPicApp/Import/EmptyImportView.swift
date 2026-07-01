@@ -25,11 +25,7 @@ struct EmptyImportView: View {
                         Task { await store.importFiles(urls) }
                     }
                     .buttonStyle(.borderedProminent).tint(p.accent).controlSize(.large)
-                    Button("Aus Fotos importieren") {
-                        let urls = FilePicker.pickImages()
-                        Task { await store.importFiles(urls) }
-                    }
-                    .buttonStyle(.bordered).controlSize(.large)
+                    PhotosImportButton()
                 }
             }
             .padding(.vertical, 56).padding(.horizontal, 40)

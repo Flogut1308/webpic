@@ -21,6 +21,7 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>NSPrincipalClass</key><string>NSApplication</string>
+  <key>NSPhotoLibraryUsageDescription</key><string>WebPic importiert ausgewählte Fotos, um sie fürs Web zu optimieren.</string>
 </dict></plist>
 PLIST
 echo "Built $APP"
