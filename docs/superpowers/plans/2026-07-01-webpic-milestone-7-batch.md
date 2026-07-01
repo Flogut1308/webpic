@@ -304,3 +304,10 @@ Controller then screenshots the batch grid (`WEBPIC_IMPORT` + `WEBPIC_TAB=batch`
 - **M8**: Sparkle auto-update (SPM), GitHub-Releases appcast, install flow + the update banner/modal (banner already in the sidebar); packaging (`.app`/DMG) + notarization decision.
 - Per-image *individual* settings (when "Alle gleich behandeln" is off) is deferred — the toggle currently only changes the note; processing always uses the global settings.
 - Carry forward: keepMetadata honoring; Photos-origin source data; downsampled Compare preview for very large images.
+
+### Carry-forward from M7 code review
+- **Fixed in-milestone:** batch no longer re-encodes the whole set on add/remove (only reprocesses when settings changed, else skips `.done` images); redundant clip removed.
+- **Per-image settings (the `sameForAll` "off" state) is unbuilt** — the toggle currently only changes its caption. Either build per-image settings or disable the "off" path. Deferred (product decision); toggle kept to match the reference.
+- **Unify encode paths before/at M8:** `processSelected` (writes `store.results` for Compare/Export) and `processAll` (writes `image.results`) encode the selected image twice with no shared cache. Consolidate so Export reads `image.results`.
+- **`.processing(Double)` progress is never advanced** (always 0) — card shows an indeterminate spinner. Wire real progress or document the payload as reserved.
+- **Cancellation:** leaving the batch tab mid-run can strand an image in `.processing` (self-heals on re-entry via reset). Add a cancellation handler that flips lingering `.processing` → `.waiting` if that state ever becomes observable.
