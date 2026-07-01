@@ -219,10 +219,32 @@ public final class AppStore {
         }
     }
 
+    private static let lastCheckKey = "wp.update.lastCheck"
+    private static let skipKey = "wp.update.skipVersion"
+
+    public func skipUpdate(_ version: String) { defaults.set(version, forKey: Self.skipKey) }
+
     @MainActor
-    public func checkForUpdate() async {
+    public func dismissUpdate() {
+        if let v = availableUpdate?.version { skipUpdate(v) }
+        availableUpdate = nil
+        showUpdate = false
+        sheet = nil
+    }
+
+    @MainActor
+    public func checkForUpdate(now: Date = Date(),
+                               loader: @Sendable (URL) async -> Data? = { url in
+                                   var req = URLRequest(url: url)
+                                   req.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+                                   return try? await URLSession.shared.data(for: req).0
+                               }) async {
+        if let last = defaults.object(forKey: Self.lastCheckKey) as? Date,
+           now.timeIntervalSince(last) < 24 * 3600 { return }
+        defaults.set(now, forKey: Self.lastCheckKey)
         let info = await UpdateChecker.fetchLatest(owner: "Flogut1308", repo: "webpic",
-                                                   currentVersion: WebPicCore.version)
+                                                   currentVersion: WebPicCore.version, loader: loader)
+        if let info, info.version == defaults.string(forKey: Self.skipKey) { return }
         availableUpdate = info
         showUpdate = (info != nil)
     }

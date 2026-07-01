@@ -38,7 +38,7 @@ struct UpdateSheet: View {
                 .background(p.grouped, in: RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
 
                 HStack(spacing: 10) {
-                    Button("Später") { store.sheet = nil }.buttonStyle(.bordered).controlSize(.large)
+                    Button("Später") { store.dismissUpdate() }.buttonStyle(.bordered).controlSize(.large)
                     Button {
                         if let url = info?.downloadURL { NSWorkspace.shared.open(url) }
                         store.sheet = nil
