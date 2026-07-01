@@ -19,7 +19,6 @@ public final class AppStore {
     public private(set) var chosenQuality: Int? = nil
 
     public enum SheetKind: Sendable { case code, update }
-    public enum SnippetFramework: String, CaseIterable, Sendable { case html, react, next, vue }
 
     @ObservationIgnored private let defaults: UserDefaults
     private static let settingsKey = "wp.settings"
