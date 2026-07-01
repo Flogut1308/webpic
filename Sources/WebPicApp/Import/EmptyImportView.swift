@@ -19,10 +19,16 @@ struct EmptyImportView: View {
                     .multilineTextAlignment(.center).lineSpacing(2)
                     .frame(maxWidth: 400).padding(.top, 8).padding(.bottom, 26)
                 HStack(spacing: 10) {
-                    Button("Bilder auswählen …") { store.seedMockImages() }
-                        .buttonStyle(.borderedProminent).tint(p.accent).controlSize(.large)
-                    Button("Aus Fotos importieren") { store.seedMockImages() }
-                        .buttonStyle(.bordered).controlSize(.large)
+                    Button("Bilder auswählen …") {
+                        let urls = FilePicker.pickImages()
+                        Task { await store.importFiles(urls) }
+                    }
+                    .buttonStyle(.borderedProminent).tint(p.accent).controlSize(.large)
+                    Button("Aus Fotos importieren") {
+                        let urls = FilePicker.pickImages()
+                        Task { await store.importFiles(urls) }
+                    }
+                    .buttonStyle(.bordered).controlSize(.large)
                 }
             }
             .padding(.vertical, 56).padding(.horizontal, 40)

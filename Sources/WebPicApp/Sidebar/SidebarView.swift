@@ -35,7 +35,10 @@ struct SidebarView: View {
 
     @ViewBuilder
     private var addButton: some View {
-        Button { store.seedMockImages() } label: {
+        Button {
+            let urls = FilePicker.pickImages()
+            Task { await store.importFiles(urls) }
+        } label: {
             Label("Bilder hinzufügen", systemImage: "plus")
                 .font(.system(size: 13, weight: .medium))
                 .frame(maxWidth: .infinity).frame(height: 32)
