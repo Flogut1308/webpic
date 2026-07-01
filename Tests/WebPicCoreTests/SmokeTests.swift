@@ -3,6 +3,6 @@ import XCTest
 
 final class SmokeTests: XCTestCase {
     func testVersion() {
-        XCTAssertEqual(WebPicCore.version, "2.0")
+        XCTAssertEqual(WebPicCore.version, "2.1")
     }
 }
