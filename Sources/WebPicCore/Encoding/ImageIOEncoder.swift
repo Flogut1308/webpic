@@ -16,12 +16,12 @@ public struct ImageIOEncoder: ImageEncoder {
         }
     }
 
-    public func encode(_ image: CGImage, quality: Double) throws -> Data {
+    public func encode(_ image: CGImage, quality: Double, metadata: [CFString: Any]? = nil) throws -> Data {
         let out = NSMutableData()
         guard let dest = CGImageDestinationCreateWithData(out as CFMutableData, uti, 1, nil) else {
             throw EncodeError.destinationFailed
         }
-        var props: [CFString: Any] = [:]
+        var props: [CFString: Any] = metadata ?? [:]
         if format != .png {
             props[kCGImageDestinationLossyCompressionQuality] = max(0, min(1, quality))
         }

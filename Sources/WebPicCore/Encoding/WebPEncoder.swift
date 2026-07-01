@@ -6,7 +6,8 @@ public struct WebPEncoder: ImageEncoder {
     public let format: ImageFormat = .webp
     public init() {}
 
-    public func encode(_ image: CGImage, quality: Double) throws -> Data {
+    // WebP: metadata embedding is not supported via libwebp; `metadata` is ignored.
+    public func encode(_ image: CGImage, quality: Double, metadata: [CFString: Any]? = nil) throws -> Data {
         let width = image.width, height = image.height
         let bytesPerRow = width * 4
         var rgba = [UInt8](repeating: 0, count: bytesPerRow * height)

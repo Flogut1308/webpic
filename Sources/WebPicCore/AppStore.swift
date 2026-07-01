@@ -140,13 +140,14 @@ public final class AppStore {
         let output = await Task.detached(priority: .userInitiated) { () -> (results: [EncodeResult], chosen: Int?) in
             let proc = ImageProcessor()
             guard let cg = proc.loadCGImage(source) else { return ([], nil) }
+            let meta = proc.sourceMetadata(source)
             if settings.compressionMode == .target {
-                if let t = try? proc.processForTarget(source: cg, settings: settings) {
+                if let t = try? proc.processForTarget(source: cg, settings: settings, sourceMetadata: meta) {
                     return (t.results, t.chosenQuality)
                 }
                 return ([], nil)
             } else {
-                let r = (try? proc.process(source: cg, settings: settings)) ?? []
+                let r = (try? proc.process(source: cg, settings: settings, sourceMetadata: meta)) ?? []
                 return (r, nil)
             }
         }.value
@@ -170,10 +171,11 @@ public final class AppStore {
         await Task.detached(priority: .userInitiated) { () -> [EncodeResult]? in
             let proc = ImageProcessor()
             guard let cg = proc.loadCGImage(source) else { return nil }
+            let meta = proc.sourceMetadata(source)
             if settings.compressionMode == .target {
-                return (try? proc.processForTarget(source: cg, settings: settings))?.results
+                return (try? proc.processForTarget(source: cg, settings: settings, sourceMetadata: meta))?.results
             } else {
-                return try? proc.process(source: cg, settings: settings)
+                return try? proc.process(source: cg, settings: settings, sourceMetadata: meta)
             }
         }.value
     }
