@@ -512,3 +512,9 @@ Controller then screenshots the sheet (launch with `WEBPIC_IMPORT`, `store.sheet
 - **M8**: Sparkle update + packaging/notarization decision.
 - Snippet `sizes="100vw"` is a sensible default; a future enhancement could let the user set `sizes`.
 - Carry the M5 items forward (keepMetadata honoring, Photos-origin source data).
+
+### Carry-forward from M6 code review
+- **Fixed in-milestone:** the Critical dimension bug (snippet emitted original pixel dims when opened before processing) — now uses `EstimationService.newDimensions`.
+- **Minor (deferred):** the tokenizer dropped the reference's comment + `{number}` highlight groups, so `.comment` is an unreachable `TokenKind` case and numbers render as plain text (cosmetic). Restore the groups or drop the case for fidelity.
+- **Minor:** `CodeSheet.copied` reset Task isn't cancelled on dismiss/rapid re-copy (benign; use `.task(id:)` if tightening).
+- **Minor:** responsive Next.js emits `sizes` without `srcSet` (inert; `next/image` handles responsive itself).

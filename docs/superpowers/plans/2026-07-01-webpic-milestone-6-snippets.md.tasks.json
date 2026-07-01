@@ -1,13 +1,13 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-6-snippets.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 35, "subject": "M6 Task 0: SnippetGenerator single-image", "status": "pending",
+    { "id": 0, "nativeTaskId": 35, "subject": "M6 Task 0: SnippetGenerator single-image", "status": "completed",
       "description": "4-framework generator + SnippetFramework promotion.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Snippets/SnippetFramework.swift\", \"Sources/WebPicCore/Snippets/SnippetGenerator.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Tests/WebPicCoreTests/SnippetGeneratorTests.swift\"], \"verifyCommand\": \"swift test --filter SnippetGeneratorTests\", \"acceptanceCriteria\": [\"HTML exact\", \"React/Next/Vue\", \"lazy+fallback+order\"]}\n```" },
-    { "id": 1, "nativeTaskId": 36, "subject": "M6 Task 1: Responsive srcset/sizes", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 36, "subject": "M6 Task 1: Responsive srcset/sizes", "status": "completed", "blockedBy": [0],
       "description": "srcset widths + sizes; largest-breakpoint fallback.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Snippets/SnippetGenerator.swift\", \"Tests/WebPicCoreTests/SnippetResponsiveTests.swift\"], \"verifyCommand\": \"swift test --filter Snippet\", \"acceptanceCriteria\": [\"srcset+sizes\", \"largest fallback\", \"non-responsive unchanged\"]}\n```" },
-    { "id": 2, "nativeTaskId": 37, "subject": "M6 Task 2: Syntax tokenizer", "status": "pending",
+    { "id": 2, "nativeTaskId": 37, "subject": "M6 Task 2: Syntax tokenizer", "status": "completed",
       "description": "Round-trippable tokenizer (tag/string/attribute/keyword).\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Snippets/SyntaxHighlighter.swift\", \"Tests/WebPicCoreTests/SyntaxHighlighterTests.swift\"], \"verifyCommand\": \"swift test --filter SyntaxHighlighterTests\", \"acceptanceCriteria\": [\"round-trip\", \"tag/attr/string\", \"keyword\"]}\n```" },
-    { "id": 3, "nativeTaskId": 38, "subject": "M6 Task 3: Code sheet UI", "status": "pending", "blockedBy": [1, 2],
+    { "id": 3, "nativeTaskId": 38, "subject": "M6 Task 3: Code sheet UI", "status": "completed", "blockedBy": [1, 2],
       "description": "Sheet: framework segmented, highlighted code, copy feedback, lazy toggle; RootView overlay.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Snippets/CodeSheet.swift\", \"Sources/WebPicApp/Snippets/HighlightedCode.swift\", \"Sources/WebPicApp/RootView.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"segmented/code/copy/lazy\", \"live update\", \"close nil\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T21:00:00Z"
