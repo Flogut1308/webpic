@@ -1,0 +1,61 @@
+{
+  "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-1-app-shell.md",
+  "tasks": [
+    {
+      "id": 0,
+      "nativeTaskId": 4,
+      "subject": "Task 0: Swift Package scaffold + runnable .app",
+      "status": "pending",
+      "description": "Swift package (WebPicCore lib + WebPicApp executable + tests, macOS 14), minimal core + smoke test, SwiftUI @main App, placeholder RootView, Scripts/bundle.sh producing dist/WebPic.app.\n\n```json:metadata\n{\"files\": [\"Package.swift\", \"Sources/WebPicCore/WebPicCore.swift\", \"Sources/WebPicApp/WebPicMain.swift\", \"Sources/WebPicApp/RootView.swift\", \"Scripts/bundle.sh\", \"Tests/WebPicCoreTests/SmokeTests.swift\"], \"verifyCommand\": \"swift build && swift test && bash Scripts/bundle.sh && open dist/WebPic.app\", \"acceptanceCriteria\": [\"swift build exits 0\", \"swift test exits 0\", \"bundle.sh writes dist/WebPic.app and it launches a titled window\"]}\n```"
+    },
+    {
+      "id": 1,
+      "nativeTaskId": 5,
+      "subject": "Task 1: Color tokens (WPPalette + hex init + environment)",
+      "status": "pending",
+      "blockedBy": [0],
+      "description": "Color(hex:) init, WPPalette light/dark with exact reference hexes, wpPalette EnvironmentKey.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Theme/Color+Hex.swift\", \"Sources/WebPicCore/Theme/WPPalette.swift\", \"Sources/WebPicApp/Theme/WPPaletteEnvironment.swift\", \"Tests/WebPicCoreTests/ColorHexTests.swift\"], \"verifyCommand\": \"swift test --filter ColorHexTests\", \"acceptanceCriteria\": [\"Color(hex:) gives correct sRGB components\", \"WPPalette.light/.dark expose all tokens\", \"swift test passes\"]}\n```"
+    },
+    {
+      "id": 2,
+      "nativeTaskId": 6,
+      "subject": "Task 2: ThemeManager (system + manual override, persisted)",
+      "status": "pending",
+      "blockedBy": [0],
+      "description": "@Observable ThemeManager: default .system, manual light/dark override, UserDefaults persistence, preferredColorScheme mapping.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Theme/ThemeManager.swift\", \"Tests/WebPicCoreTests/ThemeManagerTests.swift\"], \"verifyCommand\": \"swift test --filter ThemeManagerTests\", \"acceptanceCriteria\": [\"default is .system\", \".dark persists and restores\", \"preferredColorScheme maps correctly\"]}\n```"
+    },
+    {
+      "id": 3,
+      "nativeTaskId": 7,
+      "subject": "Task 3: Domain models + Settings (Codable)",
+      "status": "pending",
+      "blockedBy": [0],
+      "description": "Enums, Preset table, Settings (Codable, .default), WebPicImage + ImageStatus.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Models/Enums.swift\", \"Sources/WebPicCore/Models/Preset.swift\", \"Sources/WebPicCore/Models/Settings.swift\", \"Sources/WebPicCore/Models/WebPicImage.swift\", \"Tests/WebPicCoreTests/SettingsTests.swift\"], \"verifyCommand\": \"swift test --filter SettingsTests\", \"acceptanceCriteria\": [\"Settings Codable round-trips\", \"Preset table correct\", \"Settings.default matches reference\"]}\n```"
+    },
+    {
+      "id": 4,
+      "nativeTaskId": 8,
+      "subject": "Task 4: AppStore (@Observable) + reducers",
+      "status": "pending",
+      "blockedBy": [3],
+      "description": "formatBytes, MockData.seedImages, @Observable AppStore with addImages/select/remove/clearAll/persistSettings.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/AppStore.swift\", \"Sources/WebPicCore/MockData.swift\", \"Sources/WebPicCore/Formatting.swift\", \"Tests/WebPicCoreTests/AppStoreTests.swift\"], \"verifyCommand\": \"swift test --filter AppStoreTests\", \"acceptanceCriteria\": [\"addImages seeds+selects+settings tab\", \"select from batch -> settings\", \"remove reselects\", \"formatBytes German formatting\"]}\n```"
+    },
+    {
+      "id": 5,
+      "nativeTaskId": 9,
+      "subject": "Task 5: Sidebar view",
+      "status": "pending",
+      "blockedBy": [1, 2, 3, 4],
+      "description": "statusColor helper, GradientSwatch, ImageRow (hover remove, selection tint, status overlay), SidebarView over .regularMaterial.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Sidebar/SidebarView.swift\", \"Sources/WebPicApp/Sidebar/ImageRow.swift\", \"Sources/WebPicApp/Shared/GradientSwatch.swift\", \"Sources/WebPicApp/Shared/StatusColor.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"title+version+add+Alle Bilder count\", \"rows show thumb/name/dims/status dot/remove\", \"update pill conditional -> sheet .update\", \"Hell/Dunkel sets theme.appearance\"]}\n```"
+    },
+    {
+      "id": 6,
+      "nativeTaskId": 10,
+      "subject": "Task 6: Toolbar + routing + empty state + RootView wiring",
+      "status": "pending",
+      "blockedBy": [5],
+      "description": "EmptyImportView, SettingsPlaceholderView, MainView (routing + toolbar), RootView (NavigationSplitView + palette + preferredColorScheme), WebPicMain injects stores. Build+bundle+screenshot both themes.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/RootView.swift\", \"Sources/WebPicApp/WebPicMain.swift\", \"Sources/WebPicApp/MainView.swift\", \"Sources/WebPicApp/Import/EmptyImportView.swift\", \"Sources/WebPicApp/Settings/SettingsPlaceholderView.swift\"], \"verifyCommand\": \"bash Scripts/bundle.sh && open dist/WebPic.app\", \"acceptanceCriteria\": [\"empty/import screen on launch\", \"import seeds mock + populates sidebar\", \"toolbar segmented+code+export present\", \"light/dark both render correctly\"]}\n```"
+    }
+  ],
+  "lastUpdated": "2026-07-01"
+}
