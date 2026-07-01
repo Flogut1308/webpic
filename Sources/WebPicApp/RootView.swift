@@ -3,6 +3,7 @@ import WebPicCore
 
 struct RootView: View {
     @Environment(ThemeManager.self) private var theme
+    @Environment(AppStore.self) private var store
     @Environment(\.colorScheme) private var systemScheme
 
     private var effectiveScheme: ColorScheme {
@@ -24,5 +25,10 @@ struct RootView: View {
         .environment(\.wpPalette, palette)
         .preferredColorScheme(theme.preferredColorScheme)
         .tint(.blue)
+        .overlay {
+            if store.sheet == .code {
+                CodeSheet(store: store).environment(\.wpPalette, palette)
+            }
+        }
     }
 }
