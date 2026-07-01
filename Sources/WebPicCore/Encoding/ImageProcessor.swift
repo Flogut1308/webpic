@@ -14,11 +14,17 @@ public struct ImageProcessor: Sendable {
 
     public func loadCGImage(url: URL) -> CGImage? {
         guard let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-        return CGImageSourceCreateImageAtIndex(src, 0, nil)
+        return orientedImage(from: src)
     }
     public func loadCGImage(data: Data) -> CGImage? {
         guard let src = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
-        return CGImageSourceCreateImageAtIndex(src, 0, nil)
+        return orientedImage(from: src)
+    }
+    private func orientedImage(from src: CGImageSource) -> CGImage? {
+        guard let cg = CGImageSourceCreateImageAtIndex(src, 0, nil) else { return nil }
+        let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any]
+        let orientation = (props?[kCGImagePropertyOrientation] as? UInt32) ?? 1
+        return ImageResizer.applyOrientation(cg, orientation: orientation)
     }
 
     /// Resize + color-convert once, then encode each selected format at `settings.quality`.

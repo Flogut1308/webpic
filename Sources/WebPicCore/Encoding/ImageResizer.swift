@@ -1,4 +1,6 @@
 import CoreGraphics
+import CoreImage
+import ImageIO
 import Foundation
 
 public enum ImageResizer {
@@ -15,6 +17,14 @@ public enum ImageResizer {
         ctx.interpolationQuality = .high
         ctx.draw(image, in: CGRect(x: 0, y: 0, width: newW, height: newH))
         return ctx.makeImage() ?? image
+    }
+
+    /// Bake an EXIF orientation (1...8) into the pixels. Orientation 1 returns unchanged.
+    public static func applyOrientation(_ image: CGImage, orientation: UInt32) -> CGImage {
+        guard orientation != 1, let o = CGImagePropertyOrientation(rawValue: orientation) else { return image }
+        let ci = CIImage(cgImage: image).oriented(o)
+        let ctx = CIContext(options: nil)
+        return ctx.createCGImage(ci, from: ci.extent) ?? image
     }
 
     public static func convert(_ image: CGImage, to colorSpace: ColorSpace) -> CGImage {
