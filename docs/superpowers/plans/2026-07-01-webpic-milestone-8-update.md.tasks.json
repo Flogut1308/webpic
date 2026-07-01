@@ -1,13 +1,13 @@
 {
   "planPath": "docs/superpowers/plans/2026-07-01-webpic-milestone-8-update.md",
   "tasks": [
-    { "id": 0, "nativeTaskId": 41, "subject": "M8 Task 0: AppVersion + ReleaseInfo + parse", "status": "pending",
+    { "id": 0, "nativeTaskId": 41, "subject": "M8 Task 0: AppVersion + ReleaseInfo + parse", "status": "completed",
       "description": "Version compare + GitHub release JSON parsing.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Update/AppVersion.swift\", \"Sources/WebPicCore/Update/ReleaseInfo.swift\", \"Sources/WebPicCore/Update/UpdateChecker.swift\", \"Tests/WebPicCoreTests/UpdateParsingTests.swift\"], \"verifyCommand\": \"swift test --filter UpdateParsingTests\", \"acceptanceCriteria\": [\"version compare\", \"parse tag/notes/dmg\", \"malformed nil\"]}\n```" },
-    { "id": 1, "nativeTaskId": 42, "subject": "M8 Task 1: fetchLatest + AppStore wiring", "status": "pending", "blockedBy": [0],
+    { "id": 1, "nativeTaskId": 42, "subject": "M8 Task 1: fetchLatest + AppStore wiring", "status": "completed", "blockedBy": [0],
       "description": "Async fetch (newer-only, injectable loader) + availableUpdate/checkForUpdate; showUpdate default false.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/Update/UpdateChecker.swift\", \"Sources/WebPicCore/AppStore.swift\", \"Tests/WebPicCoreTests/UpdateCheckerTests.swift\"], \"verifyCommand\": \"swift test --filter UpdateCheckerTests\", \"acceptanceCriteria\": [\"newer-only via loader\", \"defaults nil/false\", \"checkForUpdate wires\"]}\n```" },
-    { "id": 2, "nativeTaskId": 43, "subject": "M8 Task 2: Update modal + banner + launch check", "status": "pending", "blockedBy": [1],
+    { "id": 2, "nativeTaskId": 43, "subject": "M8 Task 2: Update modal + banner + launch check", "status": "completed", "blockedBy": [1],
       "description": "UpdateSheet modal, banner real version, RootView overlay, WEBPIC_UPDATE mock + launch checkForUpdate.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Update/UpdateSheet.swift\", \"Sources/WebPicApp/RootView.swift\", \"Sources/WebPicApp/Sidebar/SidebarView.swift\", \"Sources/WebPicApp/WebPicMain.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"modal + opens download\", \"banner real version\", \"launch check\", \"WEBPIC_UPDATE mock\"]}\n```" },
-    { "id": 3, "nativeTaskId": 44, "subject": "M8 Task 3: DMG packaging + docs", "status": "pending",
+    { "id": 3, "nativeTaskId": 44, "subject": "M8 Task 3: DMG packaging + docs", "status": "completed",
       "description": "make-dmg.sh (hdiutil) + README bypass docs.\n\n```json:metadata\n{\"files\": [\"Scripts/make-dmg.sh\", \"README.md\"], \"verifyCommand\": \"bash Scripts/bundle.sh release && bash Scripts/make-dmg.sh\", \"acceptanceCriteria\": [\"dmg with app+Applications\", \"README bypass\", \"mounts\"]}\n```" }
   ],
   "lastUpdated": "2026-07-01T22:00:00Z"

@@ -440,3 +440,10 @@ Controller mounts the DMG to confirm.
 - App is **unsigned / not notarized** (no paid Apple Developer account). To ship notarized later: get the $99/yr account + Developer ID cert, `codesign` the .app, `notarytool submit` the DMG, `stapler staple`.
 - Sparkle 2 (silent in-app auto-install) is a future upgrade once the app is signed — the current checker + "open download" is the honest MVP.
 - Outstanding cross-milestone carry-forwards (non-blocking): unify `processSelected`/`processAll` encode paths; honor `keepMetadata` (EXIF/ICC copy-through); per-image batch settings; downsampled Compare preview for very large images.
+
+### Carry-forward from M8 code review
+- **Fixed in-milestone:** CRLF release-note parsing (GitHub bodies are `\r\n`; now split on `.isNewline`) — was collapsing all changelog bullets into one line.
+- **UX copy:** the update modal's "Installieren & neu starten" actually opens the download (lightweight checker, no in-app install). Consider relabeling ("Download öffnen") for honesty, or move to Sparkle once signed.
+- **`sameForAll` toggle (M7) is still non-functional** — wire per-image settings or remove before a public v1.
+- **No update-check throttle/cache** — banner reappears every launch until updated; add a min-interval / "skip this version" if desired.
+- **Test fixtures lean on idealized input** (LF-only bodies masked the CRLF bug) — prefer real-world-shaped fixtures going forward.
