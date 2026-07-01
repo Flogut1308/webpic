@@ -9,8 +9,10 @@ struct CompareView: View {
     private var image: WebPicImage? { store.selected }
     private var result: EncodeResult? { store.primaryResult }
     private var beforeImage: NSImage? {
-        if let url = image?.url { return NSImage(contentsOf: url) }
-        return image?.thumbnailData.flatMap(NSImage.init(data:))
+        guard let img = image else { return nil }
+        // Downsampled + cached (max 1600px) so the full-res original isn't decoded per redraw.
+        return ThumbnailCache.downsampled(id: img.id, url: img.url, data: img.sourceData)
+            ?? img.thumbnailData.flatMap(NSImage.init(data:))
     }
     private var afterImage: NSImage? { result.flatMap { NSImage(data: $0.data) } }
 
