@@ -13,6 +13,10 @@ public final class AppStore {
     public var framework: SnippetFramework = .html
     public var lazyLoading: Bool = true
     public var showUpdate: Bool = true
+    public var sameForAll: Bool = true
+
+    /// Max images encoded concurrently (bounded to protect memory — each large image ~48MB RGBA).
+    public static let batchConcurrency = max(1, min(ProcessInfo.processInfo.activeProcessorCount - 2, 4))
 
     public private(set) var processing: Bool = false
     public private(set) var results: [EncodeResult] = []
@@ -142,6 +146,56 @@ public final class AppStore {
         self.results = output.results
         self.chosenQuality = output.chosen
         self.processing = false
+    }
+
+    @MainActor private func setStatus(_ id: String, _ status: ImageStatus) {
+        if let i = images.firstIndex(where: { $0.id == id }) { images[i].status = status }
+    }
+    @MainActor private func setResults(_ id: String, _ results: [EncodeResult]) {
+        if let i = images.firstIndex(where: { $0.id == id }) { images[i].results = results }
+    }
+
+    /// Encode one URL-backed image off-main; returns nil on failure (bad/unreadable image).
+    private func encode(url: URL, settings: Settings) async -> [EncodeResult]? {
+        await Task.detached(priority: .userInitiated) { () -> [EncodeResult]? in
+            let proc = ImageProcessor()
+            guard let cg = proc.loadCGImage(url: url) else { return nil }
+            if settings.compressionMode == .target {
+                return (try? proc.processForTarget(source: cg, settings: settings))?.results
+            } else {
+                return try? proc.process(source: cg, settings: settings)
+            }
+        }.value
+    }
+
+    /// Process every URL-backed image concurrently (bounded), updating status + results.
+    @MainActor
+    public func processAll() async {
+        let settings = self.settings
+        let work: [(id: String, url: URL)] = images.compactMap { img in
+            img.url.map { (img.id, $0) }
+        }
+        for (id, _) in work { setStatus(id, .waiting); setResults(id, []) }
+
+        var iterator = work.makeIterator()
+
+        await withTaskGroup(of: (String, [EncodeResult]?).self) { group in
+            @MainActor func addNext() {
+                guard let next = iterator.next() else { return }
+                setStatus(next.id, .processing(0))
+                group.addTask {
+                    let out = await self.encode(url: next.url, settings: settings)
+                    return (next.id, out)
+                }
+            }
+
+            for _ in 0..<Self.batchConcurrency { addNext() }
+            for await (id, out) in group {
+                if let out, !out.isEmpty { setResults(id, out); setStatus(id, .done) }
+                else { setStatus(id, .error("Verarbeitung fehlgeschlagen")) }
+                addNext()
+            }
+        }
     }
 
     /// The primary optimized result (for Compare/Export display), if computed.

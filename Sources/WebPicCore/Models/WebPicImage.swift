@@ -20,6 +20,8 @@ public struct WebPicImage: Identifiable, Equatable, Sendable {
     public var gradient: [UInt32]
     /// PNG thumbnail bytes for real imports; nil → render the gradient placeholder.
     public var thumbnailData: Data?
+    /// Optimized outputs (populated by batch processing); empty until processed.
+    public var results: [EncodeResult] = []
 
     public init(id: String, name: String, pixelWidth: Int, pixelHeight: Int,
                 byteSize: Int, status: ImageStatus, url: URL? = nil,
