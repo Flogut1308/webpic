@@ -36,7 +36,7 @@
       "id": 4,
       "nativeTaskId": 8,
       "subject": "Task 4: AppStore (@Observable) + reducers",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [3],
       "description": "formatBytes, MockData.seedImages, @Observable AppStore with addImages/select/remove/clearAll/persistSettings.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicCore/AppStore.swift\", \"Sources/WebPicCore/MockData.swift\", \"Sources/WebPicCore/Formatting.swift\", \"Tests/WebPicCoreTests/AppStoreTests.swift\"], \"verifyCommand\": \"swift test --filter AppStoreTests\", \"acceptanceCriteria\": [\"addImages seeds+selects+settings tab\", \"select from batch -> settings\", \"remove reselects\", \"formatBytes German formatting\"]}\n```"
     },
@@ -44,7 +44,7 @@
       "id": 5,
       "nativeTaskId": 9,
       "subject": "Task 5: Sidebar view",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [1, 2, 3, 4],
       "description": "statusColor helper, GradientSwatch, ImageRow (hover remove, selection tint, status overlay), SidebarView over .regularMaterial.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/Sidebar/SidebarView.swift\", \"Sources/WebPicApp/Sidebar/ImageRow.swift\", \"Sources/WebPicApp/Shared/GradientSwatch.swift\", \"Sources/WebPicApp/Shared/StatusColor.swift\"], \"verifyCommand\": \"swift build\", \"acceptanceCriteria\": [\"title+version+add+Alle Bilder count\", \"rows show thumb/name/dims/status dot/remove\", \"update pill conditional -> sheet .update\", \"Hell/Dunkel sets theme.appearance\"]}\n```"
     },
@@ -52,10 +52,10 @@
       "id": 6,
       "nativeTaskId": 10,
       "subject": "Task 6: Toolbar + routing + empty state + RootView wiring",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [5],
       "description": "EmptyImportView, SettingsPlaceholderView, MainView (routing + toolbar), RootView (NavigationSplitView + palette + preferredColorScheme), WebPicMain injects stores. Build+bundle+screenshot both themes.\n\n```json:metadata\n{\"files\": [\"Sources/WebPicApp/RootView.swift\", \"Sources/WebPicApp/WebPicMain.swift\", \"Sources/WebPicApp/MainView.swift\", \"Sources/WebPicApp/Import/EmptyImportView.swift\", \"Sources/WebPicApp/Settings/SettingsPlaceholderView.swift\"], \"verifyCommand\": \"bash Scripts/bundle.sh && open dist/WebPic.app\", \"acceptanceCriteria\": [\"empty/import screen on launch\", \"import seeds mock + populates sidebar\", \"toolbar segmented+code+export present\", \"light/dark both render correctly\"]}\n```"
     }
   ],
-  "lastUpdated": "2026-07-01"
+  "lastUpdated": "2026-07-01T18:10:00Z"
 }
