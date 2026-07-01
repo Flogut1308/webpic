@@ -17,4 +17,20 @@ public enum UpdateChecker {
         let size = dmg?["size"] as? Int
         return ReleaseInfo(version: version, notes: notes, downloadURL: url, sizeBytes: size)
     }
+
+    /// Returns the latest release ONLY if newer than `currentVersion`.
+    /// `loader` is injectable for testing; defaults to a real GitHub API call.
+    public static func fetchLatest(
+        owner: String, repo: String, currentVersion: String,
+        loader: @Sendable (URL) async -> Data? = { url in
+            var req = URLRequest(url: url)
+            req.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+            return try? await URLSession.shared.data(for: req).0
+        }
+    ) async -> ReleaseInfo? {
+        let url = URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases/latest")!
+        guard let data = await loader(url), let info = parseLatestRelease(data) else { return nil }
+        guard AppVersion(info.version) > AppVersion(currentVersion) else { return nil }
+        return info
+    }
 }

@@ -12,8 +12,9 @@ public final class AppStore {
     public var sheet: SheetKind? = nil
     public var framework: SnippetFramework = .html
     public var lazyLoading: Bool = true
-    public var showUpdate: Bool = true
+    public var showUpdate: Bool = false
     public var sameForAll: Bool = true
+    public var availableUpdate: ReleaseInfo? = nil
 
     /// Max images encoded concurrently (bounded to protect memory — each large image ~48MB RGBA).
     public static let batchConcurrency = max(1, min(ProcessInfo.processInfo.activeProcessorCount - 2, 4))
@@ -205,6 +206,14 @@ public final class AppStore {
                 addNext()
             }
         }
+    }
+
+    @MainActor
+    public func checkForUpdate() async {
+        let info = await UpdateChecker.fetchLatest(owner: "Flogut1308", repo: "webpic",
+                                                   currentVersion: WebPicCore.version)
+        availableUpdate = info
+        showUpdate = (info != nil)
     }
 
     /// The primary optimized result (for Compare/Export display), if computed.
