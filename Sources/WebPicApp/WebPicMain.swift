@@ -32,8 +32,9 @@ struct WebPicMain: App {
             RootView()
                 .environment(store)
                 .environment(theme)
-                .frame(minWidth: 900, minHeight: 600)
+                .frame(minWidth: 1040, minHeight: 680)
         }
         .windowToolbarStyle(.unified)
+        .defaultSize(width: 1240, height: 820)
     }
 }

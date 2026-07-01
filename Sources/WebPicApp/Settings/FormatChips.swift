@@ -22,6 +22,7 @@ struct FormatChips: View {
                             .overlay { if on { Image(systemName: "checkmark").font(.system(size: 9, weight: .bold)).foregroundStyle(.white) } }
                         Text(label).font(.system(size: 13, weight: on ? .medium : .regular))
                             .foregroundStyle(on ? p.accent : p.t1)
+                            .lineLimit(1).fixedSize()
                     }
                     .padding(.horizontal, 12).frame(height: 34)
                     .background(on ? p.accentTint : p.card, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
