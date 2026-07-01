@@ -12,7 +12,7 @@ struct ImageRow: View {
     var body: some View {
         Button(action: onSelect) {
             HStack(spacing: 10) {
-                GradientSwatch(hexes: image.gradient)
+                ThumbnailView(image: image)
                     .frame(width: 34, height: 34)
                     .overlay {
                         if case .processing = image.status {
