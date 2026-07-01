@@ -39,15 +39,11 @@ public enum EstimationService {
         return settings.targetUnit == .mb ? v * 1_048_576 : v * 1024
     }
 
-    static func feasibleMin(image: WebPicImage, settings: Settings) -> Double {
+    public static func feasibleMin(image: WebPicImage, settings: Settings) -> Double {
         let base = Double(image.byteSize)
             * areaFactor(image: image, settings: settings)
             * formatFactor(primaryFormat(settings.formats))
         return max(8000, base * 0.10)
-    }
-
-    public static func feasibleMinPublic(image: WebPicImage, settings: Settings) -> Double {
-        feasibleMin(image: image, settings: settings)
     }
 
     public static func targetError(image: WebPicImage, settings: Settings) -> Bool {

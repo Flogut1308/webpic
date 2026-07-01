@@ -29,8 +29,7 @@ struct BreakpointsCard: View {
                 Divider()
             }
             HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .strokeBorder(p.ctrlBorder, lineWidth: 1.5).frame(width: 19, height: 19)
+                checkbox(false)   // decorative; custom width is honored by the encoder in M4
                 Text("Eigene Breite").font(.system(size: 13)).foregroundStyle(p.t2)
                 Spacer()
                 TextField("z. B. 640", text: $customText)
@@ -44,6 +43,7 @@ struct BreakpointsCard: View {
             .padding(.horizontal, 16).padding(.vertical, 11)
         }
         .wpCard(p)
+        .onAppear { if let c = store.settings.customBreakpoint { customText = String(c) } }
     }
 
     @ViewBuilder private func checkbox(_ on: Bool) -> some View {

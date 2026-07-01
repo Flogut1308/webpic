@@ -89,7 +89,7 @@ struct CompressionCard: View {
     private var errorMessage: String {
         let tb = EstimationService.targetBytes(store.settings)
         if tb.isNaN || tb <= 0 { return "Bitte eine gültige Zahl eingeben" }
-        let mn = Int(EstimationService.feasibleMinPublic(image: image, settings: store.settings))
+        let mn = Int(EstimationService.feasibleMin(image: image, settings: store.settings))
         return "Zu klein – realistisch sind mind. \(formatBytes(mn))"
     }
 }
