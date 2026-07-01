@@ -19,9 +19,9 @@ struct EmptyImportView: View {
                     .multilineTextAlignment(.center).lineSpacing(2)
                     .frame(maxWidth: 400).padding(.top, 8).padding(.bottom, 26)
                 HStack(spacing: 10) {
-                    Button("Bilder auswählen …") { store.addImages() }
+                    Button("Bilder auswählen …") { store.seedMockImages() }
                         .buttonStyle(.borderedProminent).tint(p.accent).controlSize(.large)
-                    Button("Aus Fotos importieren") { store.addImages() }
+                    Button("Aus Fotos importieren") { store.seedMockImages() }
                         .buttonStyle(.bordered).controlSize(.large)
                 }
             }

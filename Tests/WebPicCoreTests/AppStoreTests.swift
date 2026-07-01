@@ -4,7 +4,7 @@ import XCTest
 final class AppStoreTests: XCTestCase {
     func testAddSeedsAndSelects() {
         let s = AppStore(defaults: Self.tmpDefaults())
-        s.addImages()
+        s.seedMockImages()
         XCTAssertEqual(s.images.count, 4)
         XCTAssertEqual(s.selectedID, s.images.first?.id)
         XCTAssertEqual(s.tab, .settings)
@@ -12,7 +12,7 @@ final class AppStoreTests: XCTestCase {
 
     func testSelectFromBatchGoesToSettings() {
         let s = AppStore(defaults: Self.tmpDefaults())
-        s.addImages()
+        s.seedMockImages()
         s.tab = .batch
         s.select(id: s.images[2].id)
         XCTAssertEqual(s.selectedID, s.images[2].id)
@@ -21,7 +21,7 @@ final class AppStoreTests: XCTestCase {
 
     func testRemoveReselects() {
         let s = AppStore(defaults: Self.tmpDefaults())
-        s.addImages()
+        s.seedMockImages()
         let firstID = s.images[0].id
         s.remove(id: firstID)
         XCTAssertEqual(s.images.count, 3)

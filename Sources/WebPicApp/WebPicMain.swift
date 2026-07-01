@@ -13,7 +13,7 @@ struct WebPicMain: App {
         let theme = ThemeManager()
         // Screenshot/testing hooks: pre-seed and force appearance for deterministic captures.
         let env = ProcessInfo.processInfo.environment
-        if env["WEBPIC_SEED"] == "1" { store.addImages() }
+        if env["WEBPIC_SEED"] == "1" { store.seedMockImages() }
         switch env["WEBPIC_APPEARANCE"] {
         case "light": theme.appearance = .light
         case "dark":  theme.appearance = .dark
