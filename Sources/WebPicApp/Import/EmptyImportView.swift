@@ -4,6 +4,7 @@ import WebPicCore
 struct EmptyImportView: View {
     @Environment(AppStore.self) private var store
     @Environment(\.wpPalette) private var p
+    @State private var isTargeted = false
 
     var body: some View {
         VStack {
@@ -36,8 +37,13 @@ struct EmptyImportView: View {
             .background(p.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(p.sep2, style: StrokeStyle(lineWidth: 2, dash: [6]))
+                    .strokeBorder(isTargeted ? p.accent : p.sep2,
+                                  style: StrokeStyle(lineWidth: 2, dash: [6]))
             }
+            .dropDestination(for: URL.self) { urls, _ in
+                Task { await store.importFiles(urls) }
+                return !urls.isEmpty
+            } isTargeted: { isTargeted = $0 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity).padding(40)
         .background(p.grouped)

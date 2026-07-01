@@ -15,6 +15,10 @@ struct MainView: View {
         }
         .toolbar { toolbarContent }
         .navigationTitle("")
+        .dropDestination(for: URL.self) { urls, _ in
+            Task { await store.importFiles(urls) }
+            return !urls.isEmpty
+        }
     }
 
     @ToolbarContentBuilder
