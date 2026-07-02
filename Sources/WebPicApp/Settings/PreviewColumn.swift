@@ -63,8 +63,10 @@ struct PreviewColumn: View {
             }
             .frame(height: 8).padding(.bottom, 8)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text("−\(savings)%").font(.system(size: 26, weight: .semibold).monospacedDigit())
-                Text("kleiner · spart \(formatBytes(max(0, image.byteSize - estBytes)))").font(.system(size: 12)).foregroundStyle(p.t2)
+                Text("−\(savings)%").font(.system(size: 26, weight: .semibold).monospacedDigit()).fixedSize()
+                Text("kleiner · spart \(formatBytes(max(0, image.byteSize - estBytes)))")
+                    .font(.system(size: 12)).foregroundStyle(p.t2).lineLimit(1).minimumScaleFactor(0.7)
+                Spacer(minLength: 0)
             }
             .padding(.bottom, 14)
             Divider()
@@ -83,10 +85,10 @@ struct PreviewColumn: View {
                 HStack { Text("Formate").font(.system(size: 12)).foregroundStyle(p.t2); Spacer() }.padding(.top, 8)
                 ForEach(selectedFormats, id: \.self) { fmt in
                     HStack {
-                        Text(fmt.displayName).font(.system(size: 12, weight: .medium)).foregroundStyle(p.t1)
-                        Spacer()
+                        Text(fmt.displayName).font(.system(size: 12, weight: .medium)).foregroundStyle(p.t1).fixedSize()
+                        Spacer(minLength: 8)
                         Text(formatBytes(EstimationService.estimatedBytes(image: image, settings: store.activeSettings, format: fmt)))
-                            .font(.system(size: 12).monospacedDigit()).foregroundStyle(p.t2)
+                            .font(.system(size: 12).monospacedDigit()).foregroundStyle(p.t2).lineLimit(1)
                     }
                     .padding(.vertical, 3)
                 }

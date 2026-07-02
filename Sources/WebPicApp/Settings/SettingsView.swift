@@ -57,7 +57,11 @@ struct SettingsView: View {
                 if let img = store.selected {
                     PanelSplitter(width: $panelWidth, min: minPanel, max: maxPanel).environment(\.wpPalette, p)
                     ScrollView {
+                        // Force the content to the exact inner width. Relying on the ScrollView to
+                        // propose its width let the image / progress-bar GeometryReader expand past
+                        // the panel and get clipped (content looked glued to an edge).
                         PreviewColumn(image: img, store: store)
+                            .frame(width: max(180, panelW - 40), alignment: .leading)
                             .padding(.horizontal, 20).padding(.vertical, 18)
                     }
                     .frame(width: panelW)
