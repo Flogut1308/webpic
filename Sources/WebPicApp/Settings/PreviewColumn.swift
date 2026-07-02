@@ -21,6 +21,13 @@ struct PreviewColumn: View {
         formatOrder.filter { store.activeSettings.formats.contains($0) }
     }
 
+    // Show the preview at the image's true aspect ratio (no cropping); portrait images get taller
+    // and the stats below move down accordingly. Soft cap so extreme panoramas don't dominate.
+    private var aspect: CGFloat {
+        guard image.pixelWidth > 0, image.pixelHeight > 0 else { return 3.0 / 2.0 }
+        return CGFloat(image.pixelWidth) / CGFloat(image.pixelHeight)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Group {
@@ -30,7 +37,9 @@ struct PreviewColumn: View {
                     ThumbnailView(image: image, cornerRadius: 0)
                 }
             }
-            .frame(maxWidth: .infinity).frame(height: 200).clipped()
+            .aspectRatio(aspect, contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .frame(maxHeight: 460)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(alignment: .topLeading) {
                 Text("VORSCHAU").font(.system(size: 10, weight: .semibold))

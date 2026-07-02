@@ -14,7 +14,7 @@ final class UpdateThrottleTests: XCTestCase {
     func testThrottleSkipsWithin24h() async {
         let s = store()
         let calls = Counter()
-        let loader: @Sendable (URL) async -> Data? = { _ in await calls.increment(); return self.json("2.9") }
+        let loader: @Sendable (URL) async -> Data? = { _ in await calls.increment(); return self.json("99.0") }
         await s.checkForUpdate(now: Date(timeIntervalSince1970: 1000), loader: loader)
         await s.checkForUpdate(now: Date(timeIntervalSince1970: 1000 + 3600), loader: loader)
         let count = await calls.value
@@ -24,8 +24,8 @@ final class UpdateThrottleTests: XCTestCase {
 
     func testSkippedVersionNotShown() async {
         let s = store()
-        let loader: @Sendable (URL) async -> Data? = { _ in self.json("2.9") }
-        s.skipUpdate("2.9")
+        let loader: @Sendable (URL) async -> Data? = { _ in self.json("99.0") }
+        s.skipUpdate("99.0")
         await s.checkForUpdate(now: Date(timeIntervalSince1970: 5000), loader: loader)
         XCTAssertNil(s.availableUpdate)
         XCTAssertFalse(s.showUpdate)
@@ -33,7 +33,7 @@ final class UpdateThrottleTests: XCTestCase {
 
     func testDismissSkips() async {
         let s = store()
-        let loader: @Sendable (URL) async -> Data? = { _ in self.json("2.9") }
+        let loader: @Sendable (URL) async -> Data? = { _ in self.json("99.0") }
         await s.checkForUpdate(now: Date(timeIntervalSince1970: 9000), loader: loader)
         XCTAssertTrue(s.showUpdate)
         s.dismissUpdate()

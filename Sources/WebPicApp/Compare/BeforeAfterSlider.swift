@@ -28,10 +28,12 @@ struct BeforeAfterSlider: View {
 
             ZStack(alignment: .topLeading) {
                 ZStack(alignment: .topLeading) {
-                    Image(nsImage: after).resizable().aspectRatio(contentMode: .fill)
-                        .frame(width: geo.size.width, height: geo.size.height).clipped()
-                    Image(nsImage: before).resizable().aspectRatio(contentMode: .fill)
-                        .frame(width: geo.size.width, height: geo.size.height).clipped()
+                    // Fit (never crop) so portrait and landscape images are shown whole; both sides
+                    // use the same fit so they stay pixel-aligned for the slider.
+                    Image(nsImage: after).resizable().aspectRatio(contentMode: .fit)
+                        .frame(width: geo.size.width, height: geo.size.height)
+                    Image(nsImage: before).resizable().aspectRatio(contentMode: .fit)
+                        .frame(width: geo.size.width, height: geo.size.height)
                         .mask(alignment: .leading) { Rectangle().frame(width: geo.size.width * fraction) }
                 }
                 .scaleEffect(liveScale).offset(liveOffset)

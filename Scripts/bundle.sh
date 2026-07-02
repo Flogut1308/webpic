@@ -15,8 +15,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>CFBundleName</key><string>WebPic</string>
   <key>CFBundleDisplayName</key><string>WebPic</string>
   <key>CFBundleIdentifier</key><string>com.flogut.webpic</string>
-  <key>CFBundleVersion</key><string>2.9</string>
-  <key>CFBundleShortVersionString</key><string>2.9</string>
+  <key>CFBundleVersion</key><string>2.10</string>
+  <key>CFBundleShortVersionString</key><string>2.10</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleExecutable</key><string>WebPic</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
